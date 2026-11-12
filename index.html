@@ -1,0 +1,1864 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pemilihan DKP</title>
+<link rel="icon" type="image/svg+xml" href='data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"%3E%3Cdefs%3E%3ClinearGradient id="g" x1="0" y1="0" x2="1" y2="1"%3E%3Cstop offset="0" stop-color="%234f46e5"/%3E%3Cstop offset="1" stop-color="%23a855f7"/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath fill="url(%23g)" d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/%3E%3Cpath fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4"/%3E%3C/svg%3E'>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --ink:#0f172a; --muted:#64748b; --line:#e7ebf4; --bg:#f3f5fb;
+  --surface:#ffffff; --primary:#4f46e5; --primary-2:#8b5cf6;
+  --grad:linear-gradient(135deg,#4f46e5 0%,#7c3aed 55%,#a855f7 100%);
+  --success:#10b981; --danger:#ef4444; --warn:#f59e0b; --info:#0ea5e9;
+  --radius:16px; --radius-sm:10px;
+  --shadow:0 1px 2px rgba(15,23,42,.05),0 10px 30px -18px rgba(79,70,229,.25);
+  --shadow-lg:0 24px 60px -24px rgba(15,23,42,.28);
+  --font:'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,'Cascadia Code',Consolas,monospace;
+}
+html,body{height:100%}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+input,select,textarea{font-family:inherit;font-size:14px;color:var(--ink);width:100%;padding:11px 13px;border:1.5px solid var(--line);border-radius:var(--radius-sm);background:#fbfcfe;outline:none;transition:border-color .15s,box-shadow .15s}
+input:focus,select:focus,textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(79,70,229,.12);background:#fff}
+textarea{resize:vertical;min-height:90px}
+label{display:block;font-size:12.5px;font-weight:700;color:var(--muted);margin:14px 0 6px;letter-spacing:.2px}
+.hidden{display:none!important}
+.mono{font-family:var(--mono)}
+.ic{width:18px;height:18px;flex:none}
+.icon-btn{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:10px;color:var(--muted);transition:.15s}
+.icon-btn:hover{background:#eef1fb;color:var(--primary)}
+
+/* ---------- Buttons ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 18px;border-radius:12px;font-weight:700;font-size:14px;transition:.18s;user-select:none}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:var(--grad);color:#fff;box-shadow:0 8px 20px -8px rgba(99,91,255,.55)}
+.btn-primary:hover{filter:brightness(1.07)}
+.btn-danger{background:var(--danger);color:#fff}
+.btn-danger:hover{filter:brightness(1.08)}
+.btn-ghost{background:#eef1fb;color:var(--primary)}
+.btn-ghost:hover{background:#e3e8fb}
+.btn-block{width:100%}
+.btn-sm{padding:8px 12px;font-size:13px;border-radius:10px}
+.link-btn{color:var(--primary);font-weight:600;font-size:13px;margin-top:18px;display:inline-flex;align-items:center;gap:6px}
+.link-btn:hover{text-decoration:underline}
+
+/* ---------- Badge ---------- */
+.badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:99px;font-size:12px;font-weight:700}
+.badge-primary{background:#eef0ff;color:var(--primary)}
+.badge-info{background:#e7f6ff;color:#0284c7}
+.badge-success{background:#e3f9ef;color:#059669}
+.badge-danger{background:#feecec;color:#dc2626}
+.badge-warn{background:#fff4e0;color:#b45309}
+
+/* ---------- Screens ---------- */
+.screen{min-height:100vh}
+#login-screen{display:flex}
+
+/* ---------- Login ---------- */
+.login-left{flex:1.15;background:var(--grad);position:relative;display:flex;flex-direction:column;justify-content:center;padding:60px 70px;color:#fff;overflow:hidden}
+.login-left::after{content:'';position:absolute;inset:0;background:radial-gradient(60% 80% at 85% 15%,rgba(255,255,255,.16),transparent 60%)}
+.blob{position:absolute;border-radius:50%;filter:blur(2px);opacity:.5}
+.blob.b1{width:340px;height:340px;background:rgba(255,255,255,.14);top:-90px;right:-70px;animation:float 9s ease-in-out infinite}
+.blob.b2{width:260px;height:260px;background:rgba(255,255,255,.10);bottom:-70px;left:-50px;animation:float 11s ease-in-out infinite reverse}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-18px)}}
+.login-brand{display:flex;align-items:center;gap:16px;position:relative;z-index:2;margin-bottom:44px}
+.crest{width:58px;height:58px;display:flex;align-items:center;justify-content:center}
+.crest img{width:100%;height:100%;object-fit:contain;display:block}
+.crest .ic{width:30px;height:30px}
+.login-app-name{font-size:27px;font-weight:800;letter-spacing:-.5px}
+.login-school-name{font-size:14px;opacity:.85;font-weight:600}
+.login-tag{position:relative;z-index:2;max-width:440px}
+.login-tag h2{font-size:clamp(26px,3.4vw,40px);line-height:1.12;font-weight:800;letter-spacing:-1px;margin-bottom:14px}
+.login-tag p{font-size:15px;opacity:.85;max-width:380px}
+.login-ticket-deco{position:relative;z-index:2;display:flex;gap:12px;margin-top:34px}
+.mini-ticket{font-family:var(--mono);font-size:13px;font-weight:700;letter-spacing:3px;padding:9px 14px;border-radius:10px;background:rgba(255,255,255,.14);border:1px dashed rgba(255,255,255,.45);backdrop-filter:blur(4px)}
+.login-jadwal{position:relative;z-index:2;margin-top:26px;display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;background:rgba(0,0,0,.16);padding:8px 14px;border-radius:99px}
+.login-jadwal .ic{width:15px;height:15px}
+.login-right{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;padding:40px 24px;background:var(--bg)}
+.login-card{width:100%;max-width:420px;background:var(--surface);border-radius:22px;padding:38px 36px;box-shadow:var(--shadow-lg)}
+.login-footer{text-align:center;font-size:12.5px;color:var(--muted);font-weight:600}
+.login-card-head h3{font-size:23px;font-weight:800;letter-spacing:-.4px}
+.login-card-head p{color:var(--muted);font-size:13.5px;margin-top:4px}
+.tabs{display:grid;grid-template-columns:1fr 1fr;background:#eef1fb;padding:4px;border-radius:12px;margin:24px 0 22px}
+.tab{padding:10px;border-radius:9px;font-weight:700;font-size:13.5px;color:var(--muted);transition:.2s}
+.tab.active{background:#fff;color:var(--primary);box-shadow:0 2px 8px rgba(15,23,42,.10)}
+.ticket-card{position:relative;background:#f6f7ff;border:1.5px dashed #cdd3f7;border-radius:14px;padding:8px}
+.ticket-card::before,.ticket-card::after{content:'';position:absolute;top:50%;width:16px;height:16px;border-radius:50%;background:#fff;transform:translateY(-50%)}
+.ticket-card::before{left:-8px}
+.ticket-card::after{right:-8px}
+.token-input{font-family:var(--mono);font-size:24px;font-weight:700;letter-spacing:8px;text-align:center;background:transparent;border:none;padding:12px 6px;border-radius:10px}
+.token-input:focus{border:none;box-shadow:0 0 0 3px rgba(79,70,229,.12)}
+.form-hint{font-size:12.5px;color:var(--muted);margin-top:8px}
+.login-form .btn{margin-top:20px}
+.input-icon{position:relative}
+.input-icon .input-ic{position:absolute;right:8px;top:50%;transform:translateY(-50%);color:#94a3b8;display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:8px;transition:.15s}
+.input-icon .input-ic:hover{color:var(--primary);background:#eef1fb}
+.input-icon .input-ic .ic{width:18px;height:18px}
+.input-icon input{padding-right:44px}
+
+/* ---------- Loading overlay ---------- */
+#loading-overlay{position:fixed;inset:0;z-index:300;background:rgba(15,23,42,.45);backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;animation:fade .18s ease}
+.loading-box{display:flex;flex-direction:column;align-items:center;gap:14px;background:#fff;border-radius:20px;padding:30px 40px;box-shadow:var(--shadow-lg);animation:pop .22s ease}
+.loading-spinner{width:42px;height:42px;border:4px solid #e4e8f7;border-top-color:var(--primary);border-radius:50%;animation:spin .75s linear infinite}
+.loading-text{font-size:14px;font-weight:700;color:var(--muted)}
+
+/* ---------- App shell ---------- */
+#app{display:flex;min-height:100vh}
+#sidebar{width:264px;flex:none;background:var(--surface);border-right:1px solid var(--line);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;transition:width .25s ease,transform .25s ease;z-index:40}
+body.collapsed #sidebar{width:82px}
+.sb-head{display:flex;align-items:center;gap:10px;padding:18px 16px;border-bottom:1px solid var(--line)}
+.sb-brand{display:flex;align-items:center;gap:12px;flex:1;min-width:0}
+.crest.small{width:46px;height:46px;flex:none}
+.crest.small .ic{width:22px;height:22px;color:var(--primary)}
+.sb-brand-txt{display:flex;flex-direction:column;min-width:0}
+.sb-brand-txt b{font-size:14.5px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-brand-txt span{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#sb-nav{flex:1;overflow-y:auto;padding:14px 12px}
+.nav-link{display:flex;align-items:center;gap:12px;padding:11px 13px;border-radius:12px;font-weight:600;font-size:14px;color:#475569;margin-bottom:4px;transition:.16s;position:relative}
+.nav-link:hover{background:#f1f3fb;color:var(--primary)}
+.nav-link.active{background:#eef0ff;color:var(--primary)}
+.nav-link .nav-ic{color:#94a3b8}
+.nav-link.active .nav-ic{color:var(--primary)}
+.nav-chev{margin-left:auto;transition:transform .2s}
+.has-sub.open .nav-chev{transform:rotate(180deg)}
+.nav-sub{max-height:0;overflow:hidden;transition:max-height .25s ease}
+.has-sub.open .nav-sub{max-height:300px}
+.nav-link.sub{padding:8px 13px 8px 20px;font-size:13.5px;font-weight:500;color:var(--muted)}
+.nav-link.sub .nav-ic{width:16px;height:16px}
+body.collapsed .sb-brand-txt,body.collapsed .nav-txt,body.collapsed .nav-chev{display:none}
+body.collapsed .nav-link{justify-content:center;padding:11px}
+body.collapsed .nav-link.sub{padding:8px;justify-content:center}
+body.collapsed #sb-nav .nav-sub{max-height:none;padding:0}
+body.collapsed .has-sub{display:flex;flex-direction:column;align-items:center}
+
+/* ---------- Topbar ---------- */
+.app-main{flex:1;min-width:0;display:flex;flex-direction:column}
+#topbar{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:14px 26px}
+.tb-left{display:flex;align-items:center;gap:14px}
+#topbar h2{font-size:19px;font-weight:800;letter-spacing:-.3px}
+.tb-right{position:relative}
+.user-chip{display:flex;align-items:center;gap:11px;padding:7px 12px 7px 7px;border-radius:14px;cursor:pointer;transition:.15s;border:1.5px solid transparent}
+.user-chip:hover{background:#f1f3fb;border-color:var(--line)}
+.avatar{width:38px;height:38px;border-radius:12px;background:var(--grad);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px}
+.user-meta{display:flex;flex-direction:column;line-height:1.2}
+.user-meta b{font-size:13.5px}
+.user-meta span{font-size:11.5px;color:var(--muted)}
+.user-chip .chev{color:var(--muted);font-size:11px;margin-left:4px}
+.user-menu{position:absolute;right:0;top:calc(100% + 10px);background:#fff;border-radius:14px;box-shadow:var(--shadow-lg);border:1px solid var(--line);padding:8px;min-width:190px;z-index:60;animation:pop .18s ease}
+@keyframes pop{from{opacity:0;transform:translateY(-6px) scale(.98)}to{opacity:1;transform:none}}
+.user-menu button{display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border-radius:10px;font-size:13.5px;font-weight:600;color:#475569;transition:.15s}
+.user-menu button:hover{background:#f1f3fb;color:var(--primary)}
+.user-menu button:last-child:hover{color:var(--danger);background:#feecec}
+
+/* ---------- Content ---------- */
+#content{padding:26px;width:100%;max-width:1360px;margin:0 auto}
+.app-footer{text-align:center;padding:15px 16px 20px;font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);background:var(--surface);margin-top:auto;font-weight:600}
+.page-loading{display:flex;align-items:center;justify-content:center;gap:10px;padding:70px 0;color:var(--muted);font-weight:600}
+.spinner{width:22px;height:22px;border:3px solid #e2e6f5;border-top-color:var(--primary);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty-state{text-align:center;color:var(--muted);padding:50px 20px;font-size:14px}
+
+/* ---------- Cards ---------- */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px}
+.card-title{font-size:16px;font-weight:800;letter-spacing:-.2px;display:flex;align-items:center;gap:9px;margin-bottom:16px}
+.card-title .ic{color:var(--primary)}
+
+/* ---------- Dashboard ---------- */
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:20px}
+.stat-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;display:flex;align-items:center;gap:15px;transition:transform .18s}
+.stat-card:hover{transform:translateY(-3px)}
+.stat-ic{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex:none}
+.stat-ic.ic-primary{background:#eef0ff;color:var(--primary)}
+.stat-ic.ic-success{background:#e3f9ef;color:#059669}
+.stat-ic.ic-info{background:#e7f6ff;color:#0284c7}
+.stat-ic.ic-warn{background:#fff4e0;color:#b45309}
+.stat-ic .ic{width:22px;height:22px}
+.stat-val{font-size:25px;font-weight:800;letter-spacing:-.5px;line-height:1.1}
+.stat-lbl{font-size:12.5px;color:var(--muted);font-weight:600}
+.welcome-card{background:var(--grad);border-radius:var(--radius);color:#fff;padding:26px 28px;margin-bottom:20px;position:relative;overflow:hidden;box-shadow:0 14px 34px -16px rgba(99,91,255,.5)}
+.welcome-card::after{content:'';position:absolute;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,.12);top:-80px;right:-40px}
+.welcome-card h2{font-size:21px;font-weight:800;letter-spacing:-.3px}
+.welcome-card p{font-size:13.5px;opacity:.88;margin-top:4px;max-width:520px}
+.welcome-card .row{display:flex;align-items:center;gap:14px;position:relative;z-index:2}
+.log-table{width:100%;border-collapse:collapse}
+.log-table th{text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);padding:9px 12px;border-bottom:1px solid var(--line)}
+.log-table td{padding:10px 12px;border-bottom:1px solid var(--line);font-size:13.5px;vertical-align:middle}
+.log-table tr:last-child td{border-bottom:none}
+.log-pagination{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:14px}
+
+/* ---------- Master ---------- */
+.subnav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.subnav-item{padding:9px 16px;border-radius:99px;font-weight:700;font-size:13px;color:var(--muted);background:var(--surface);border:1px solid var(--line);transition:.16s}
+.subnav-item:hover{color:var(--primary);border-color:#c7d2fe}
+.subnav-item.active{background:var(--grad);color:#fff;border-color:transparent;box-shadow:0 6px 16px -8px rgba(99,91,255,.6)}
+.master-grid{display:grid;grid-template-columns:360px minmax(0,1fr);gap:18px;align-items:start}
+.master-grid>*{min-width:0}
+.m-table{min-width:0;overflow:hidden}
+.m-form form label:first-child{margin-top:0}
+.form-actions{display:flex;gap:10px;margin-top:22px}
+.form-actions .btn{flex:1}
+.table-toolbar{display:flex;align-items:center;gap:12px;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap}
+.import-bar{background:#f8f9fe;border:1.5px dashed #c9d2f7;border-radius:14px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;justify-content:flex-end;gap:12px;flex-wrap:wrap}
+.import-acts{display:flex;gap:9px;flex-wrap:wrap}
+.table-search{position:relative;flex:1;min-width:200px;max-width:340px}
+.table-search .ic{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#94a3b8}
+.table-search input{padding-left:38px}
+.table-filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.table-filters select{width:auto;padding:8px 12px;font-size:13px}
+.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+.tbl{width:100%;border-collapse:collapse;min-width:600px}
+.tbl th{text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);background:#f8f9fd;padding:11px 13px;border-bottom:1px solid var(--line);white-space:nowrap}
+.tbl td{padding:11px 13px;border-bottom:1px solid var(--line);font-size:13.5px;vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tbody tr{transition:background .12s}
+.tbl tbody tr:hover{background:#f8f9fe}
+.tbl .chk{width:36px;text-align:center}
+.tbl .act{width:120px;text-align:right;white-space:nowrap}
+.tbl .act .icon-btn{width:32px;height:32px}
+.tbl .empty{text-align:center;color:var(--muted);padding:34px}
+input[type=checkbox]{width:17px;height:17px;accent-color:var(--primary);cursor:pointer}
+.table-foot{display:flex;align-items:center;justify-content:space-between;margin-top:13px;font-size:13px;color:var(--muted);font-weight:600}
+.pagination{display:flex;align-items:center;gap:10px}
+.pg-btn{width:32px;height:32px;border-radius:9px;background:#eef1fb;color:var(--primary);font-weight:800;transition:.15s}
+.pg-btn:hover:not(:disabled){background:#dfe5fb}
+.pg-btn:disabled{opacity:.4;cursor:default}
+.ticket-chip{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-weight:700;letter-spacing:2px;background:#f0f2ff;border:1px dashed #c7d0f8;border-radius:10px;padding:7px 12px;color:var(--primary)}
+.mini-photo{width:42px;height:42px;border-radius:10px;object-fit:cover;background:#eef1fb}
+.mini-photo-ph{width:42px;height:42px;border-radius:10px;background:#eef1fb;display:flex;align-items:center;justify-content:center;color:#a5b0cf}
+.mini-photo-ph .ic{width:18px;height:18px}
+
+/* ---------- Foto upload ---------- */
+.photo-upload{display:flex;gap:14px;align-items:center}
+.photo-prev{width:86px;height:86px;border-radius:14px;border:1.5px dashed #cdd3f7;background:#f8f9ff;overflow:hidden;display:flex;align-items:center;justify-content:center;color:#a5b0cf;flex:none}
+.photo-prev img{width:100%;height:100%;object-fit:cover}
+.photo-prev span{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:10.5px;font-weight:700}
+.photo-prev .ic{width:20px;height:20px}
+.photo-ctls{display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+.muted-sm{font-size:12px;color:var(--muted);font-weight:600}
+
+/* ---------- Pemilihan ---------- */
+.sched-strip{display:flex;align-items:flex-start;gap:13px;background:#fff7e6;border:1px solid #fde9bd;border-radius:14px;padding:16px 18px;margin-bottom:20px;color:#92600a}
+.sched-strip .ic{color:var(--warn);width:20px;height:20px;margin-top:2px}
+.sched-strip b{display:block;font-size:14px}
+.sched-strip span{font-size:13px}
+.sched-strip.open{background:#e3f9ef;border-color:#b9f0da;color:#065f46}
+.sched-strip.open .ic{color:var(--success)}
+.paslon-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:18px}
+.paslon-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;transition:transform .2s,box-shadow .2s;position:relative}
+.paslon-card:hover{transform:translateY(-5px);box-shadow:var(--shadow-lg)}
+.paslon-photos{display:grid;grid-template-columns:1fr 1fr;height:180px}
+.p-photo{position:relative;overflow:hidden;background:linear-gradient(135deg,#eef0ff,#f6f3ff);display:flex;align-items:center;justify-content:center}
+.p-photo:first-child{border-right:2px solid #fff}
+.p-photo img{width:100%;height:100%;object-fit:cover}
+.p-photo .ph{display:flex;flex-direction:column;align-items:center;gap:6px;color:#a5b0cf;text-align:center;padding:6px}
+.p-photo .ph .ic{width:24px;height:24px}
+.p-tag{position:absolute;bottom:0;left:0;right:0;padding:3px 6px;font-size:10.5px;font-weight:700;background:rgba(15,23,42,.55);color:#fff;text-align:center}
+.paslon-no{position:absolute;top:12px;left:12px;width:46px;height:46px;border-radius:14px;background:var(--grad);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:19px;box-shadow:0 8px 18px -6px rgba(99,91,255,.6)}
+.paslon-body{padding:16px 18px 18px}
+.paslon-body h4{font-size:16.5px;font-weight:800;letter-spacing:-.2px}
+.paslon-body .sub{color:var(--muted);font-size:13.5px;margin-top:2px}
+.paslon-acts{display:flex;gap:9px;margin-top:15px}
+.paslon-acts .btn{flex:1;font-size:13px;padding:9px 10px}
+.voted-card{background:var(--surface);border:1px solid #b9f0da;border-radius:var(--radius);box-shadow:var(--shadow);padding:30px;text-align:center;max-width:560px;margin:0 auto}
+.voted-check{width:64px;height:64px;border-radius:50%;background:#e3f9ef;color:#059669;display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+.voted-check .ic{width:30px;height:30px}
+.voted-card h2{font-size:21px;font-weight:800}
+.voted-card .voted-detail{margin-top:18px;background:#f8f9fe;border-radius:14px;padding:18px;display:inline-flex;flex-direction:column;align-items:center;gap:4px}
+.voted-detail .mono{color:var(--primary);font-size:13px}
+
+/* ---------- Monitor ---------- */
+.monitor-toolbar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:18px;flex-wrap:wrap}
+.switch{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:13.5px;color:var(--muted);cursor:pointer}
+.switch input{width:auto;accent-color:var(--primary)}
+.mon-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:18px;align-items:start}
+.mon-toolbar-acts{display:flex;gap:9px;flex-wrap:wrap}
+.mon-toolbar-acts .btn{font-size:13px;padding:9px 14px}
+.last-updated{font-size:12.5px;color:var(--muted);font-weight:600;font-family:var(--mono)}
+.bar-row{display:flex;align-items:center;gap:13px;margin-bottom:15px}
+.bar-rank{width:34px;height:34px;border-radius:10px;background:var(--grad);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;flex:none}
+.bar-main{flex:1;min-width:0}
+.bar-name{font-size:13.5px;font-weight:700;margin-bottom:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-track{height:12px;background:#eef1fb;border-radius:99px;overflow:hidden}
+.bar-fill{height:100%;border-radius:99px;transition:width .8s cubic-bezier(.22,1,.36,1)}
+.bar-val{font-family:var(--mono);font-weight:700;font-size:15px;min-width:78px;text-align:right}
+.bar-val small{color:var(--muted);font-size:11px}
+.part-progress{margin:16px 0 22px}
+.part-label{display:flex;justify-content:space-between;font-size:13px;font-weight:700;margin-bottom:7px}
+.part-label small{color:var(--muted);font-weight:600}
+.part-track{height:20px;background:#eef1fb;border-radius:99px;overflow:hidden}
+.part-fill{height:100%;background:var(--grad);border-radius:99px;transition:width .9s cubic-bezier(.22,1,.36,1)}
+.kelas-row{display:flex;align-items:center;gap:11px;margin-bottom:11px;font-size:13px}
+.kelas-name{width:120px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kelas-track{flex:1;height:9px;background:#eef1fb;border-radius:99px;overflow:hidden}
+.kelas-fill{height:100%;border-radius:99px;background:#94a3f8;transition:width .8s ease}
+.kelas-val{font-family:var(--mono);font-size:12.5px;font-weight:700;min-width:70px;text-align:right;color:var(--muted)}
+.skel{border-radius:var(--radius);background:var(--surface);border:1px solid var(--line);padding:22px}
+.skel-line{height:14px;border-radius:8px;background:linear-gradient(90deg,#eef1fb 25%,#f6f8ff 50%,#eef1fb 75%);background-size:200% 100%;animation:shimmer 1.3s infinite;margin-bottom:14px}
+.skel-line.w70{width:70%}.skel-line.w50{width:50%}
+@keyframes shimmer{to{background-position:-200% 0}}
+
+/* ---------- Hasil / Report ---------- */
+.hasil-actions{display:flex;justify-content:flex-end;margin-bottom:16px}
+.report{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:40px 44px;box-shadow:var(--shadow)}
+.report-head{display:flex;align-items:center;gap:16px;border-bottom:2px solid var(--ink);padding-bottom:16px;margin-bottom:16px}
+.report-logo{width:62px;height:62px;object-fit:cover;border-radius:10px}
+.report-head h1{font-size:22px;font-weight:800;letter-spacing:-.4px}
+.report-head h2{font-size:15px;color:var(--muted);font-weight:600}
+.report-meta{font-size:12.5px;color:var(--muted);text-align:right;margin-bottom:18px;font-family:var(--mono)}
+.report-table{width:100%;border-collapse:collapse;margin-bottom:22px}
+.report-table th{background:#f1f3fb;text-align:left;padding:10px 12px;font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);border:1px solid var(--line)}
+.report-table td{padding:10px 12px;border:1px solid var(--line);font-size:13.5px}
+.report-table .num{text-align:center;font-weight:800}
+.report-table .right{text-align:right;font-family:var(--mono)}
+.report-part{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:22px}
+.report-part .box{border:1px solid var(--line);border-radius:12px;padding:14px;text-align:center}
+.report-part .box b{display:block;font-size:20px;font-weight:800}
+.report-part .box span{font-size:12px;color:var(--muted);font-weight:600}
+.report-sign{display:flex;justify-content:flex-end;margin-top:34px}
+.report-sign .sig{text-align:center}
+.report-sign .sig-b{font-weight:800;margin-top:66px;border-top:1.5px solid var(--ink);padding-top:8px;min-width:210px}
+.report-sign .sig-s{font-size:12px;color:var(--muted)}
+.report-note{font-size:12px;color:var(--muted);margin-top:14px}
+
+/* ---------- Modals ---------- */
+.modal-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.5);backdrop-filter:blur(4px);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;animation:fade .18s ease}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.modal{background:#fff;border-radius:20px;box-shadow:var(--shadow-lg);width:100%;max-width:440px;padding:26px;animation:pop .2s ease;max-height:90vh;overflow-y:auto}
+.modal.wide{max-width:600px}
+.modal-head{display:flex;align-items:center;gap:13px;margin-bottom:10px}
+.modal-head h3{font-size:17px;font-weight:800}
+.confirm-ic{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex:none}
+.confirm-ic.primary{background:#eef0ff;color:var(--primary)}
+.confirm-ic.danger{background:#feecec;color:var(--danger)}
+.modal-body{color:#475569;font-size:14px;margin-bottom:22px}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end}
+.modal-actions .btn{min-width:110px}
+.visi-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+.visi-person{border:1px solid var(--line);border-radius:14px;overflow:hidden;text-align:center}
+.visi-person img{width:100%;height:150px;object-fit:cover}
+.visi-person .ph{height:150px;background:linear-gradient(135deg,#eef0ff,#f6f3ff);display:flex;align-items:center;justify-content:center;color:#a5b0cf}
+.visi-person .ph .ic{width:30px;height:30px}
+.visi-person .cap{padding:9px;font-weight:700;font-size:13.5px}
+.visi-person .cap small{display:block;color:var(--muted);font-size:11px;font-weight:600}
+.visi-text{background:#f8f9fe;border-radius:14px;padding:16px;font-size:14px;white-space:pre-line;line-height:1.7;margin-top:14px}
+
+/* ---------- Toasts ---------- */
+#toasts{position:fixed;top:18px;right:18px;z-index:200;display:flex;flex-direction:column;gap:10px;max-width:360px}
+.toast{display:flex;align-items:flex-start;gap:11px;background:#fff;border-radius:14px;box-shadow:var(--shadow-lg);padding:13px 16px;border-left:4px solid var(--success);animation:toastIn .28s cubic-bezier(.22,1,.36,1);font-size:13.5px;font-weight:600}
+.toast.error{border-left-color:var(--danger)}
+.toast .tic{width:20px;height:20px;flex:none;margin-top:1px;color:var(--success)}
+.toast.error .tic{color:var(--danger)}
+.toast-leave{opacity:0;transform:translateX(30px);transition:.25s}
+@keyframes toastIn{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:none}}
+
+/* ---------- Responsive ---------- */
+.mobile-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.4);z-index:35;opacity:0;pointer-events:none;transition:.25s}
+body.nav-open .mobile-backdrop{opacity:1;pointer-events:auto}
+@media (max-width:1024px){
+  .master-grid{grid-template-columns:minmax(0,1fr)}
+  .mon-grid{grid-template-columns:1fr}
+}
+@media (max-width:860px){
+  .login-left{padding:38px 30px}
+  .login-tag h2{font-size:26px}
+  .login-ticket-deco{display:none}
+}
+@media (max-width:760px){
+  #login-screen{flex-direction:column}
+  .login-left{padding:34px 26px;justify-content:flex-start}
+  .login-brand{margin-bottom:22px}
+  .login-tag h2{font-size:24px}
+  .login-jadwal{margin-top:18px}
+  .login-right{padding:26px 18px 40px}
+  .login-card{padding:28px 22px}
+  #sidebar{position:fixed;transform:translateX(-100%)}
+  body.nav-open #sidebar{transform:none;box-shadow:var(--shadow-lg)}
+  body.collapsed #sidebar{width:264px}
+  body.collapsed .sb-brand-txt,body.collapsed .nav-txt,body.collapsed .nav-chev{display:flex}
+  body.collapsed .nav-link{justify-content:flex-start;padding:11px 13px}
+  #topbar{padding:12px 16px}
+  #content{padding:16px}
+  .report{padding:24px 18px}
+}
+@media print{
+  #sidebar,#topbar,#toasts,.hasil-actions,.modal-backdrop,.app-footer{display:none!important}
+  body{background:#fff}
+  #content{padding:0;max-width:none}
+  .report{border:none;box-shadow:none;padding:0}
+  .report-head h1{font-size:19px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+</style>
+</head>
+<body>
+
+<!-- ===================== LOGIN ===================== -->
+<div id="login-screen" class="screen hidden">
+  <div class="login-left">
+    <div class="blob b1"></div>
+    <div class="blob b2"></div>
+    <div class="login-brand">
+      <div class="crest" id="login-logo"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg></div>
+      <div>
+        <h1 class="login-app-name">Pemilihan DKP</h1>
+        <p class="login-school-name" id="login-school">SMA Negeri 1 Contoh</p>
+      </div>
+    </div>
+    <div class="login-tag">
+      <h2>Suaramu menentukan pemimpin Madrsah.</h2>
+      <p>Pilih pasangan calon dengan percaya diri. Setiap suara dihitung secara transparan dan real-time.</p>
+    </div>
+    <div class="login-ticket-deco">
+      <div class="mini-ticket">123456</div>
+      <div class="mini-ticket">654321</div>
+      <div class="mini-ticket">098765</div>
+    </div>
+    <div class="login-jadwal" id="login-jadwal">
+      <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      <span id="login-jadwal-text">Jadwal pemilihan belum diumumkan</span>
+    </div>
+  </div>
+  <div class="login-right">
+    <div class="login-card">
+      <div class="login-card-head">
+        <h3>Masuk ke Aplikasi</h3>
+        <p>Gunakan akun sesuai peran Anda.</p>
+      </div>
+      <div class="tabs">
+        <button type="button" class="tab active" data-tab="admin">Admin/Panitia</button>
+        <button type="button" class="tab" data-tab="voter">Pemilih</button>
+      </div>
+      <form id="login-admin-form" class="login-form" autocomplete="off">
+        <label>Username</label>
+        <input name="username" placeholder="Masukkan username" required>
+        <label>Password</label>
+        <div class="input-icon">
+          <input name="password" type="password" placeholder="Masukkan password" required>
+          <button type="button" class="input-ic toggle-pw" title="Tampilkan password" aria-label="Tampilkan password">
+            <svg class="ic ic-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            <svg class="ic ic-eye-off hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+          </button>
+        </div>
+        <button class="btn btn-primary btn-block" type="submit">Masuk</button>
+      </form>
+      <form id="login-voter-form" class="login-form hidden" autocomplete="off">
+        <label>Token Pemilih</label>
+        <div class="ticket-card">
+          <input class="token-input" name="token" maxlength="6" inputmode="numeric" autocomplete="one-time-code" placeholder="000000" required>
+        </div>
+        <p class="form-hint">Masukkan 6 digit token yang diberikan oleh panitia.</p>
+        <button class="btn btn-primary btn-block" type="submit">Vote Sekarang</button>
+      </form>
+    </div>
+    <p class="login-footer">Dibuat oleh Exelino Geofany | Versi 1.1</p>
+  </div>
+</div>
+
+<!-- ===================== APLIKASI ===================== -->
+<div id="app" class="hidden">
+  <aside id="sidebar">
+    <div class="sb-head">
+      <div class="sb-brand">
+        <div class="crest small" id="sb-logo"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg></div>
+        <div class="sb-brand-txt">
+          <b id="sb-app">Pemilihan DKP</b>
+          <span id="sb-school">SMA Negeri 1 Contoh</span>
+        </div>
+      </div>
+    </div>
+    <nav id="sb-nav"></nav>
+  </aside>
+  <div class="app-main">
+    <header id="topbar">
+      <div class="tb-left">
+        <button class="icon-btn" id="btn-menu" title="Menu" type="button">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <h2 id="page-title">Dasbor</h2>
+      </div>
+      <div class="tb-right">
+        <div class="user-chip" id="user-chip">
+          <div class="avatar" id="user-avatar">A</div>
+          <div class="user-meta">
+            <b id="user-name">Nama</b>
+            <span id="user-role">Peran</span>
+          </div>
+          <span class="chev">&#9662;</span>
+        </div>
+        <div class="user-menu hidden" id="user-menu">
+          <button type="button" data-act="profil">
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            Profil
+          </button>
+          <button type="button" data-act="logout">
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Keluar
+          </button>
+        </div>
+      </div>
+    </header>
+    <main id="content"></main>
+    <footer class="app-footer">Dibuat oleh Exelino Geofany | Versi 1.1</footer>
+  </div>
+</div>
+
+<div id="modal-root"></div>
+<div id="toasts"></div>
+<div class="mobile-backdrop" id="mobile-backdrop"></div>
+
+<!-- ===================== LOADING GLOBAL ===================== -->
+<div id="loading-overlay" class="hidden">
+  <div class="loading-box">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Memproses...</div>
+  </div>
+</div>
+
+<script>
+/* =====================================================================
+   PEMILIHAN DKP — Frontend
+   >>> TEMPEL URL WEB APP APPS SCRIPT ANDA DI ANTARA TANDA KUTIP DI BAWAH <<<
+   ===================================================================== */
+<<<<<<< HEAD
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxgUZxMkJixWYhVTmTilAV0vrHezv8516wV1S59mWPk62f24ZJA4AiuGtL89Ds6gd6_Rg/exec';
+=======
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyfk7jTMbhN01kTu-ezL4wFlpOiLXrJDYq7fB7w330SUWi2f7iwYgSbk9yBMOxeJwJu/exec';
+>>>>>>> 698a8e159fc914e490f6e4cd8d68e02900a43c5b
+const ICONS = {
+  home:'<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>',
+  folder:'<path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>',
+  users:'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+  layers:'<polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>',
+  'user-check':'<path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><polyline points="17 11 19 13 23 9"/>',
+  activity:'<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>',
+  'file-text':'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>',
+  settings:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>',
+  menu:'<line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/>',
+  x:'<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>',
+  edit:'<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"/>',
+  trash:'<polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>',
+  eye:'<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>',
+  refresh:'<polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>',
+  maximize:'<path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>',
+  'log-out':'<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>',
+  copy:'<rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>',
+  'chevron-down':'<polyline points="6 9 12 15 18 9"/>',
+  upload:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>',
+  download:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>',
+  check:'<polyline points="20 6 9 17 4 12"/>',
+  checkCircle:'<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>',
+  info:'<circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>',
+  calendar:'<rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>',
+  search:'<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>',
+  vote:'<polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>',
+  shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/>',
+  'user':'<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+  printer:'<polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>',
+  alert:'<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>'
+};
+const CHART_COLORS = ['#4f46e5','#0ea5e9','#10b981','#f59e0b','#ef4444','#8b5cf6','#14b8a6','#f97316','#ec4899','#22c55e'];
+
+/* ---------- Helpers ---------- */
+const el = id => document.getElementById(id);
+const $$ = s => Array.from(document.querySelectorAll(s));
+const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const icon = (n, cls='') => `<svg class="ic ${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS[n]||ICONS.info}</svg>`;
+const badge = (t, cls) => `<span class="badge badge-${cls}">${esc(t)}</span>`;
+function fotoUrl(v){
+  if(!v) return '';
+  v = String(v).trim();
+  if(!v) return '';
+  if(/^https?:/i.test(v)){
+    // URL lengkap: coba ekstrak ID file Drive dari bentuk apapun
+    const m = v.match(/\/file\/d\/([^/?#]+)/) || v.match(/[?&]id=([^&#]+)/);
+    if(m) return 'https://drive.google.com/thumbnail?id=' + encodeURIComponent(m[1]) + '&sz=w800';
+    return v;
+  }
+  // Dianggap ID file Google Drive
+  return 'https://drive.google.com/thumbnail?id=' + encodeURIComponent(v) + '&sz=w800';
+}
+const fmtDate = s => {
+  if(!s) return '—';
+  const d = new Date(String(s).includes('T') ? s : String(s).replace(' ','T'));
+  if(!isNaN(d)) return d.toLocaleString('id-ID',{day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'});
+  return s;
+};
+const fmtClock = () => new Date().toLocaleTimeString('id-ID');
+
+/* ---------- State ---------- */
+const S = {
+  scriptUrl: SCRIPT_URL,
+  session: sessionStorage.getItem('session') || null,
+  user: null,
+  collapsed: localStorage.getItem('sbCollapsed') === '1',
+  autoRefresh: true,
+  monitorTimer: null,
+  admins: [], kelas: [], pemilih: [], paslon: []
+};
+const MF = { type: null, editId: null };
+let CHART_ORDER = [];
+
+/* ---------- Toast ---------- */
+function toast(msg, type='success'){
+  const wrap = el('toasts');
+  const t = document.createElement('div');
+  t.className = 'toast' + (type==='error' ? ' error' : '');
+  t.innerHTML = `<span class="tic">${type==='error' ? icon('alert') : icon('checkCircle')}</span><span>${msg}</span>`;
+  wrap.appendChild(t);
+  setTimeout(() => { t.classList.add('toast-leave'); setTimeout(() => t.remove(), 260); }, 3800);
+}
+
+/* ---------- Loading global ---------- */
+let loadingCount = 0;
+function showLoading(msg){
+  loadingCount++;
+  const ov = el('loading-overlay');
+  if(ov){ ov.querySelector('.loading-text').textContent = msg || 'Memproses...'; ov.classList.remove('hidden'); }
+}
+function hideLoading(){
+  loadingCount = Math.max(0, loadingCount - 1);
+  if(loadingCount === 0) el('loading-overlay').classList.add('hidden');
+}
+
+/* ---------- API ---------- */
+async function api(action, payload={}, loadingMsg, quiet){
+  if(!S.scriptUrl) throw new Error('URL Apps Script belum dikonfigurasi.');
+  if(!quiet) showLoading(loadingMsg);
+  try{
+    let res;
+    try{
+      res = await fetch(S.scriptUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action, sessionId: S.session, payload })
+      });
+    }catch(e){
+      throw new Error('Gagal terhubung ke server.');
+    }
+    let json;
+    try { json = await res.json(); }
+    catch(e){ throw new Error('Respon tidak valid dari server.'); }
+    if(!json.ok) throw new Error(json.error || 'Terjadi kesalahan.');
+    return json.data;
+  } finally {
+    if(!quiet) hideLoading();
+  }
+}
+
+/* ---------- Modal ---------- */
+function closeModal(){ el('modal-root').innerHTML = ''; }
+function confirmDialog(opts){
+  el('modal-root').innerHTML = `
+    <div class="modal-backdrop">
+      <div class="modal">
+        <div class="modal-head">
+          <div class="confirm-ic ${opts.danger ? 'danger' : 'primary'}">${opts.danger ? icon('trash') : icon('info')}</div>
+          <h3>${esc(opts.title)}</h3>
+        </div>
+        <div class="modal-body">${opts.message}</div>
+        <div class="modal-actions">
+          <button class="btn btn-ghost" data-x>Batal</button>
+          <button class="btn ${opts.danger ? 'btn-danger' : 'btn-primary'}" data-ok>${esc(opts.okText || 'Ya, Lanjutkan')}</button>
+        </div>
+      </div>
+    </div>`;
+  el('modal-root').querySelector('[data-x]').onclick = closeModal;
+  el('modal-root').querySelector('[data-ok]').onclick = () => { closeModal(); if(opts.onOk) opts.onOk(); };
+}
+
+/* ---------- Tabel generik (pencarian, filter, paginasi, hapus massal) ---------- */
+function renderTable(container, cfg){
+  const pageSize = cfg.pageSize || 8;
+  let search = '', page = 1;
+  const selected = new Set();
+  const filters = (cfg.filters || []).map(f => { if(f.value === undefined) f.value = ''; return f; });
+
+  function filtered(){
+    let rows = cfg.rows;
+    if(search){
+      const s = search.toLowerCase();
+      rows = rows.filter(r => cfg.searchKeys.some(k => String(r[k] ?? '').toLowerCase().includes(s)));
+    }
+    rows = rows.filter(cfg.filter || (() => true));
+    return rows;
+  }
+
+  function draw(){
+    const rows = filtered();
+    const pages = Math.max(1, Math.ceil(rows.length / pageSize));
+    if(page > pages) page = pages;
+    const slice = rows.slice((page-1)*pageSize, page*pageSize);
+    const prevInput = container.querySelector('[data-s]');
+    const keepFocus = prevInput && document.activeElement === prevInput;
+    const selAll = slice.length > 0 && slice.every(r => selected.has(String(r.ID)));
+    const colSpan = cfg.headers.length + (cfg.bulk ? 1 : 0) + (cfg.rowActions ? 1 : 0);
+
+    container.innerHTML = `
+      <div class="table-toolbar">
+        <div class="table-search">
+          ${icon('search')}
+          <input data-s type="text" placeholder="${esc(cfg.searchPlaceholder || 'Cari data...')}" value="${esc(search)}">
+        </div>
+        ${cfg.bulk && selected.size ? `<button class="btn btn-danger btn-sm" data-bulk>${icon('trash')} Hapus Terpilih (${selected.size})</button>` : ''}
+      </div>
+      ${filters.length ? `<div class="table-filters">${filters.map(f => `
+        <select data-f="${esc(f.key)}">
+          <option value="">${esc(f.label)}: Semua</option>
+          ${f.options.map(o => `<option value="${esc(o.value)}" ${String(f.value) === String(o.value) ? 'selected' : ''}>${esc(o.label)}</option>`).join('')}
+        </select>`).join('')}</div>` : ''}
+      <div class="table-wrap">
+        <table class="tbl">
+          <thead><tr>
+            ${cfg.bulk ? `<th class="chk"><input type="checkbox" data-all ${selAll ? 'checked' : ''}></th>` : ''}
+            ${cfg.headers.map(h => `<th>${esc(h.label)}</th>`).join('')}
+            ${cfg.rowActions ? '<th class="act">Aksi</th>' : ''}
+          </tr></thead>
+          <tbody>
+            ${slice.length ? slice.map(r => `<tr>
+              ${cfg.bulk ? `<td class="chk"><input type="checkbox" data-row="${esc(r.ID)}" ${selected.has(String(r.ID)) ? 'checked' : ''}></td>` : ''}
+              ${cfg.headers.map(h => `<td>${h.render(r)}</td>`).join('')}
+              ${cfg.rowActions ? `<td class="act">${cfg.rowActions.map(a => `<button class="icon-btn" data-act="${esc(a.key)}" data-id="${esc(r.ID)}" title="${esc(a.title)}">${a.icon}</button>`).join('')}</td>` : ''}
+            </tr>`).join('') : `<tr><td colspan="${colSpan}" class="empty">${esc(cfg.emptyText || 'Tidak ada data.')}</td></tr>`}
+          </tbody>
+        </table>
+      </div>
+      <div class="table-foot">
+        <span>${rows.length} data</span>
+        <div class="pagination">
+          <button class="pg-btn" data-pg="prev" ${page <= 1 ? 'disabled' : ''}>&#8249;</button>
+          <span>${page} / ${pages}</span>
+          <button class="pg-btn" data-pg="next" ${page >= pages ? 'disabled' : ''}>&#8250;</button>
+        </div>
+      </div>`;
+
+    const input = container.querySelector('[data-s]');
+    input.addEventListener('input', e => { search = e.target.value; page = 1; draw(); });
+    if(keepFocus){ input.focus(); input.setSelectionRange(input.value.length, input.value.length); }
+
+    filters.forEach(f => {
+      const sel = container.querySelector(`[data-f="${f.key}"]`);
+      if(sel) sel.addEventListener('change', e => { f.value = e.target.value; page = 1; draw(); });
+    });
+
+    const all = container.querySelector('[data-all]');
+    if(all) all.addEventListener('change', e => {
+      slice.forEach(r => { if(e.target.checked) selected.add(String(r.ID)); else selected.delete(String(r.ID)); });
+      draw();
+    });
+    container.querySelectorAll('[data-row]').forEach(cb => cb.addEventListener('change', e => {
+      const id = e.target.dataset.row;
+      if(e.target.checked) selected.add(String(id)); else selected.delete(String(id));
+      draw();
+    }));
+    container.querySelectorAll('[data-act]').forEach(btn => btn.addEventListener('click', () => {
+      const r = rows.find(x => String(x.ID) === String(btn.dataset.id));
+      const a = cfg.rowActions.find(x => x.key === btn.dataset.act);
+      if(r && a) a.click(r);
+    }));
+    const bulkBtn = container.querySelector('[data-bulk]');
+    if(bulkBtn) bulkBtn.addEventListener('click', () => {
+      if(!selected.size) return;
+      confirmDialog({
+        title: 'Hapus data terpilih',
+        message: cfg.bulk.confirmMsg.replace('{n}', selected.size),
+        danger: true,
+        okText: 'Hapus',
+        onOk: async () => {
+          try{
+            await cfg.bulk.action([...selected]);
+            toast('Data berhasil dihapus.');
+            selected.clear();
+            await cfg.refresh();
+          }catch(e){ toast(e.message, 'error'); }
+        }
+      });
+    });
+    container.querySelectorAll('[data-pg]').forEach(b => b.addEventListener('click', () => {
+      page = b.dataset.pg === 'prev' ? page - 1 : page + 1;
+      draw();
+    }));
+  }
+  draw();
+}
+
+/* ---------- Router ---------- */
+const ROLE_ALLOWED = {
+  '#/dashboard': ['Admin','Panitia','Pemilih'],
+  '#/master/admin': ['Admin'], '#/master/kelas': ['Admin'], '#/master/pemilih': ['Admin'], '#/master/paslon': ['Admin'],
+  '#/pemilihan': ['Pemilih'],
+  '#/monitor': ['Panitia'],
+  '#/hasil': ['Panitia'],
+  '#/pengaturan': ['Admin']
+};
+const PAGE_TITLES = {
+  '#/dashboard': 'Dasbor',
+  '#/master/admin': 'Data Master — Admin/Panitia',
+  '#/master/kelas': 'Data Master — Kelas',
+  '#/master/pemilih': 'Data Master — Pemilih',
+  '#/master/paslon': 'Data Master — Paslon',
+  '#/pemilihan': 'Pemilihan',
+  '#/monitor': 'Monitor',
+  '#/hasil': 'Hasil',
+  '#/pengaturan': 'Pengaturan'
+};
+const SUB_NAV = [
+  { key:'admin', href:'#/master/admin', label:'Admin/Panitia' },
+  { key:'kelas', href:'#/master/kelas', label:'Kelas' },
+  { key:'pemilih', href:'#/master/pemilih', label:'Pemilih' },
+  { key:'paslon', href:'#/master/paslon', label:'Paslon' }
+];
+const PAGES = {
+  '#/dashboard': pageDashboard,
+  '#/master/admin': () => { MF.type = 'admin'; MF.editId = null; return pageMaster(); },
+  '#/master/kelas': () => { MF.type = 'kelas'; MF.editId = null; return pageMaster(); },
+  '#/master/pemilih': () => { MF.type = 'pemilih'; MF.editId = null; return pageMaster(); },
+  '#/master/paslon': () => { MF.type = 'paslon'; MF.editId = null; return pageMaster(); },
+  '#/pemilihan': pagePemilihan,
+  '#/monitor': pageMonitor,
+  '#/hasil': pageHasil,
+  '#/pengaturan': pagePengaturan
+};
+
+function render(){
+  const hash = location.hash || '#/dashboard';
+  if(!S.user){ showScreen('login'); return; }
+  if(S.monitorTimer && hash !== '#/monitor'){ clearInterval(S.monitorTimer); S.monitorTimer = null; }
+  const allowed = ROLE_ALLOWED[hash];
+  if(allowed && allowed.indexOf(S.user.role) === -1){
+    location.hash = '#/dashboard';
+    return;
+  }
+  el('page-title').textContent = PAGE_TITLES[hash] || 'Pemilihan OSIS';
+  renderNav();
+  const fn = PAGES[hash] || pageDashboard;
+  fn();
+}
+
+/* ---------- Navigasi / shell ---------- */
+function navItems(role){
+  const items = [{ href:'#/dashboard', label:'Dasbor', icon:'home' }];
+  if(role === 'Admin'){
+    items.push({ href:'#/master/admin', label:'Data Master', icon:'folder', children:[
+      { href:'#/master/admin', label:'Admin/Panitia', icon:'users' },
+      { href:'#/master/kelas', label:'Kelas', icon:'layers' },
+      { href:'#/master/pemilih', label:'Pemilih', icon:'user-check' },
+      { href:'#/master/paslon', label:'Paslon', icon:'users' }
+    ]});
+  }
+  if(role === 'Pemilih') items.push({ href:'#/pemilihan', label:'Pemilihan', icon:'vote' });
+  if(role === 'Panitia'){
+    items.push({ href:'#/monitor', label:'Monitor', icon:'activity' });
+    items.push({ href:'#/hasil', label:'Hasil', icon:'file-text' });
+  }
+  if(role === 'Admin') items.push({ href:'#/pengaturan', label:'Pengaturan', icon:'settings' });
+  return items;
+}
+
+const isActive = h => location.hash === h;
+
+function renderNav(){
+  const items = navItems(S.user.role);
+  el('sb-nav').innerHTML = items.map(it => {
+    if(it.children){
+      const open = it.children.some(c => isActive(c.href));
+      return `<div class="nav-item has-sub ${open ? 'open' : ''}">
+        <a class="nav-link sub-toggle" href="${it.href}">
+          <span class="nav-ic">${icon(it.icon)}</span>
+          <span class="nav-txt">${esc(it.label)}</span>
+          <span class="nav-chev">${icon('chevron-down')}</span>
+        </a>
+        <div class="nav-sub">
+          ${it.children.map(c => `<a class="nav-link sub ${isActive(c.href) ? 'active' : ''}" href="${c.href}"><span class="nav-ic">${icon(c.icon)}</span><span class="nav-txt">${esc(c.label)}</span></a>`).join('')}
+        </div>
+      </div>`;
+    }
+    return `<a class="nav-link ${isActive(it.href) ? 'active' : ''}" href="${it.href}"><span class="nav-ic">${icon(it.icon)}</span><span class="nav-txt">${esc(it.label)}</span></a>`;
+  }).join('');
+  $$('#sb-nav .sub-toggle').forEach(a => a.addEventListener('click', e => {
+    e.preventDefault();
+    const parent = a.closest('.has-sub');
+    if(S.collapsed){ setCollapsed(false); }
+    parent.classList.toggle('open');
+  }));
+  $$('#sb-nav .has-sub').forEach(p => {
+    if(p.querySelector('.sub.active')) p.querySelector('.sub-toggle').classList.add('active');
+  });
+}
+
+function setCollapsed(v){
+  S.collapsed = v;
+  document.body.classList.toggle('collapsed', v);
+  localStorage.setItem('sbCollapsed', v ? '1' : '0');
+}
+
+/* ---------- Screens ---------- */
+function showScreen(id){
+  el('login-screen').classList.toggle('hidden', id !== 'login');
+  el('app').classList.toggle('hidden', id !== 'app');
+}
+
+function showLogin(){
+  showScreen('login');
+  el('user-menu').classList.add('hidden');
+}
+
+function enterApp(){
+  showScreen('app');
+  document.body.classList.toggle('collapsed', S.collapsed);
+  buildShell();
+  if(!location.hash) location.hash = '#/dashboard';
+  render();
+}
+
+function buildShell(){
+  el('sb-school').textContent = S.schoolName || 'Pemilihan OSIS';
+  el('user-name').textContent = S.user.name;
+  el('user-role').textContent = S.user.role;
+  el('user-avatar').textContent = (S.user.name || '?').trim().charAt(0).toUpperCase();
+  renderNav();
+}
+
+/* ---------- Login ---------- */
+function bindLogin(){
+  $$('#login-screen .tab').forEach(t => t.addEventListener('click', () => {
+    $$('#login-screen .tab').forEach(x => x.classList.toggle('active', x === t));
+    el('login-admin-form').classList.toggle('hidden', t.dataset.tab !== 'admin');
+    el('login-voter-form').classList.toggle('hidden', t.dataset.tab !== 'voter');
+  }));
+  el('login-admin-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const fd = new FormData(e.target);
+    const btn = e.target.querySelector('button[type=submit]');
+    btn.disabled = true;
+    try{
+      const r = await api('login', { username: fd.get('username'), password: fd.get('password') }, 'Memeriksa kredensial...');
+      S.session = r.session; S.user = r.user;
+      sessionStorage.setItem('session', r.session);
+      enterApp();
+    }catch(err){ toast(err.message, 'error'); }
+    btn.disabled = false;
+  });
+  el('login-voter-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const fd = new FormData(e.target);
+    const token = String(fd.get('token') || '').replace(/\D/g,'').slice(0,6);
+    if(token.length !== 6) return toast('Token harus 6 digit angka.', 'error');
+    const btn = e.target.querySelector('button[type=submit]');
+    btn.disabled = true;
+    try{
+      const r = await api('loginVoter', { token }, 'Memverifikasi token...');
+      S.session = r.session; S.user = r.user;
+      sessionStorage.setItem('session', r.session);
+      enterApp();
+    }catch(err){ toast(err.message, 'error'); }
+    btn.disabled = false;
+  });
+  el('login-admin-form').querySelector('.toggle-pw').addEventListener('click', e => {
+    const wrap = e.currentTarget.parentElement;
+    const input = wrap.querySelector('input[name=password]');
+    const show = input.type === 'password';
+    input.type = show ? 'text' : 'password';
+    wrap.querySelector('.ic-eye').classList.toggle('hidden', show);
+    wrap.querySelector('.ic-eye-off').classList.toggle('hidden', !show);
+    e.currentTarget.title = show ? 'Sembunyikan password' : 'Tampilkan password';
+  });
+  el('login-voter-form').querySelector('.token-input').addEventListener('input', e => {
+    e.target.value = e.target.value.replace(/\D/g, '').slice(0, 6);
+  });
+}
+
+function setFavicon(url){
+  if(!url) return;
+  const href = fotoUrl(url);
+  let link = document.querySelector('link[rel="icon"]');
+  if(!link){ link = document.createElement('link'); link.rel = 'icon'; document.head.appendChild(link); }
+  link.href = href;
+}
+
+function applySchoolLogo(url){
+  if(!url) return;
+  const href = fotoUrl(url);
+  const loginLogo = el('login-logo');
+  const sbLogo = el('sb-logo');
+  if(loginLogo) loginLogo.innerHTML = `<img src="${href}" alt="logo sekolah">`;
+  if(sbLogo) sbLogo.innerHTML = `<img src="${href}" alt="logo sekolah">`;
+}
+
+async function loadPublicInfo(){
+  try{
+    const info = await api('getPublicInfo');
+    S.schoolName = info.namaSekolah || 'SMA Negeri 1 Contoh';
+    el('login-school').textContent = S.schoolName;
+    setFavicon(info.logo);
+    applySchoolLogo(info.logo);
+    if(info.jadwalText){
+      el('login-jadwal-text').textContent = 'Jadwal vote: ' + info.jadwalText;
+    }
+  }catch(e){ /* URL belum aktif */ }
+}
+
+async function logout(){
+  try{ await api('logout'); }catch(e){}
+  S.session = null; S.user = null;
+  sessionStorage.removeItem('session');
+  showLogin();
+  location.hash = '';
+}
+
+/* ---------- Dashboard ---------- */
+async function pageDashboard(){
+  el('content').innerHTML = '<div class="page-loading"><div class="spinner"></div> Memuat dasbor...</div>';
+  try{
+    const d = await api('getDashboard');
+    const isStaff = S.user.role !== 'Pemilih';
+    el('content').innerHTML = `
+      <div class="welcome-card">
+        <div class="row">
+          <div>
+            <h2>Halo, ${esc(d.name)}</h2>
+            <p>Selamat datang di aplikasi <b>Pemilihan OSIS</b> — ${esc(d.namaSekolah)}.</p>
+          </div>
+        </div>
+      </div>
+      <div class="stat-grid">
+        <div class="stat-card"><div class="stat-ic ic-primary">${icon('users')}</div><div><div class="stat-val">${d.jumlahPemilih}</div><div class="stat-lbl">Pemilih Terdaftar</div></div></div>
+        <div class="stat-card"><div class="stat-ic ic-info">${icon('layers')}</div><div><div class="stat-val">${d.jumlahPaslon}</div><div class="stat-lbl">Pasangan Calon</div></div></div>
+        <div class="stat-card"><div class="stat-ic ic-success">${icon('checkCircle')}</div><div><div class="stat-val">${d.sudahMemilih}</div><div class="stat-lbl">Sudah Memilih</div></div></div>
+        <div class="stat-card"><div class="stat-ic ic-warn">${icon('calendar')}</div><div><div class="stat-val">${esc(d.status)}</div><div class="stat-lbl">Status Voting</div></div></div>
+      </div>
+      ${isStaff ? `
+        <div class="card">
+          <h3 class="card-title">${icon('activity')} Log Aktivitas Terbaru</h3>
+          <div id="log-area"></div>
+        </div>` : `<div class="card"><h3 class="card-title">${icon('calendar')} Jadwal Pemilihan</h3><p style="color:var(--muted)">${d.jadwalText ? esc(d.jadwalText) : 'Belum ditentukan oleh panitia.'}</p></div>`}
+    `;
+    if(isStaff) renderLogArea(d.log, d.logTotal, 1);
+  }catch(e){ el('content').innerHTML = ''; toast(e.message, 'error'); }
+}
+
+const aksiBadge = a => a === 'Tambah' ? 'success' : a === 'Hapus' ? 'danger' : a === 'Vote' ? 'warn' : 'primary';
+
+async function renderLogArea(rows, total, page){
+  const area = el('log-area');
+  if(!area) return;
+  const pageSize = 10;
+  const pages = Math.max(1, Math.ceil(total / pageSize));
+  const rowHtml = rows.map(l => `
+    <tr>
+      <td class="mono" style="white-space:nowrap">${esc(l.Waktu)}</td>
+      <td>${esc(l.Username)}</td>
+      <td>${badge(l.Aksi, aksiBadge(l.Aksi))}</td>
+      <td>${esc(l.Target)}</td>
+      <td style="color:var(--muted)">${esc(l.Keterangan)}</td>
+    </tr>`).join('');
+  area.innerHTML = rows.length
+    ? `<table class="log-table">
+        <thead><tr><th>Waktu</th><th>Username</th><th>Aksi</th><th>Target</th><th>Keterangan</th></tr></thead>
+        <tbody>${rowHtml}</tbody>
+      </table>
+      ${total > pageSize ? `<div class="log-pagination">
+        <button class="pg-btn" data-pg="prev" ${page <= 1 ? 'disabled' : ''}>&#8249;</button>
+        <span>${page} / ${pages}</span>
+        <button class="pg-btn" data-pg="next" ${page >= pages ? 'disabled' : ''}>&#8250;</button>
+      </div>` : ''}`
+    : '<div class="empty-state">Belum ada aktivitas.</div>';
+  area.querySelectorAll('[data-pg]').forEach(b => b.addEventListener('click', async () => {
+    const np = b.dataset.pg === 'prev' ? page - 1 : page + 1;
+    if(np < 1 || np > pages) return;
+    try{ const d = await api('getLogs', { page: np }); renderLogArea(d.rows, d.total, np); }
+    catch(e){ toast(e.message, 'error'); }
+  }));
+}
+
+/* ---------- Data Master ---------- */
+async function refreshList(type){
+  if(type === 'admin') S.admins = await api('getAdmins');
+  else if(type === 'kelas'){ const [k, p] = await Promise.all([api('getKelas'), api('getPemilih')]); S.kelas = k; S.pemilih = p; }
+  else if(type === 'pemilih'){ const [p, k] = await Promise.all([api('getPemilih'), api('getKelas')]); S.pemilih = p; S.kelas = k; }
+  else if(type === 'paslon') S.paslon = await api('getPaslon');
+}
+
+function masterShell(){
+  return `<div class="master-wrap">
+    <div class="subnav">${SUB_NAV.map(s => `<a class="subnav-item ${s.key === MF.type ? 'active' : ''}" href="${s.href}">${esc(s.label)}</a>`).join('')}</div>
+    <div class="master-grid">
+      <section class="card m-form" id="m-form"></section>
+      <section class="card m-table" id="m-table"></section>
+    </div>
+  </div>`;
+}
+
+async function pageMaster(){
+  el('content').innerHTML = masterShell();
+  el('content').querySelector('#m-form').innerHTML = '<div class="page-loading"><div class="spinner"></div></div>';
+  el('content').querySelector('#m-table').innerHTML = '<div class="page-loading"><div class="spinner"></div></div>';
+  try{
+    await refreshList(MF.type);
+    renderMasterForm(MF.type);
+    renderMasterTable(MF.type);
+  }catch(e){
+    toast(e.message, 'error');
+    el('content').innerHTML = `<div class="empty-state">${esc(e.message)}</div>`;
+  }
+}
+
+/* --- Admin/Panitia --- */
+function renderMasterForm(type){
+  if(type === 'admin') return renderAdminForm();
+  if(type === 'kelas') return renderKelasForm();
+  if(type === 'pemilih') return renderPemilihForm();
+  if(type === 'paslon') return renderPaslonForm();
+}
+function renderMasterTable(type){
+  if(type === 'admin') return renderAdminTable();
+  if(type === 'kelas') return renderKelasTable();
+  if(type === 'pemilih') return renderPemilihTable();
+  if(type === 'paslon') return renderPaslonTable();
+}
+
+function renderAdminForm(){
+  const ed = MF.editId ? S.admins.find(a => String(a.ID) === String(MF.editId)) : null;
+  el('m-form').innerHTML = `
+    <h3 class="card-title">${ed ? 'Edit' : 'Tambah'} Admin/Panitia</h3>
+    <form id="f-admin">
+      <label>Username</label>
+      <input name="username" value="${esc(ed ? ed.Username : '')}" placeholder="Username" required>
+      <label>Password</label>
+      <input name="password" value="${esc(ed ? ed.Password : '')}" placeholder="Password" required>
+      <label>Nama Lengkap</label>
+      <input name="nama" value="${esc(ed ? ed['Nama Lengkap'] : '')}" placeholder="Nama Lengkap" required>
+      <label>Peran</label>
+      <select name="peran">
+        <option value="Admin" ${ed && ed.Peran === 'Admin' ? 'selected' : ''}>Admin</option>
+        <option value="Panitia" ${ed && ed.Peran === 'Panitia' ? 'selected' : ''}>Panitia</option>
+      </select>
+      <div class="form-actions">
+        <button class="btn btn-primary" type="submit">${icon('check')} Simpan</button>
+        ${ed ? '<button class="btn btn-ghost" type="button" id="f-cancel">Batal</button>' : ''}
+      </div>
+    </form>`;
+  const form = el('f-admin');
+  form.onsubmit = async e => {
+    e.preventDefault();
+    const fd = new FormData(form);
+    try{
+      await api('saveAdmin', { id: MF.editId, username: fd.get('username'), password: fd.get('password'), nama: fd.get('nama'), peran: fd.get('peran') });
+      toast(ed ? 'Perubahan disimpan.' : 'Admin/Panitia ditambahkan.');
+      MF.editId = null;
+      await refreshList('admin'); renderMasterForm('admin'); renderMasterTable('admin');
+    }catch(err){ toast(err.message, 'error'); }
+  };
+  el('f-cancel') && el('f-cancel').addEventListener('click', () => { MF.editId = null; renderMasterForm('admin'); renderMasterTable('admin'); });
+}
+
+function renderAdminTable(){
+  renderTable(el('m-table'), {
+    headers: [
+      { label:'Username', render: r => `<code class="mono">${esc(r.Username)}</code>` },
+      { label:'Nama Lengkap', render: r => esc(r['Nama Lengkap']) },
+      { label:'Peran', render: r => r.Peran === 'Admin' ? badge('Admin','primary') : badge('Panitia','info') }
+    ],
+    rows: S.admins,
+    searchKeys: ['Username', 'Nama Lengkap'],
+    searchPlaceholder: 'Cari username / nama...',
+    bulk: {
+      confirmMsg: 'Yakin menghapus {n} akun terpilih?',
+      action: async ids => { await api('deleteAdmins', { ids }); await refreshList('admin'); }
+    },
+    refresh: () => renderMasterTable('admin'),
+    rowActions: [
+      { key:'edit', title:'Edit', icon:icon('edit'), click:r => { MF.editId = r.ID; renderMasterForm('admin'); } },
+      { key:'del', title:'Hapus', icon:icon('trash'), click:r => confirmDialog({ title:'Hapus akun', message:`Hapus akun <b>${esc(r.Username)}</b>?`, danger:true, okText:'Hapus', onOk:async () => { try{ await api('deleteAdmins',{ids:[r.ID]}); await refreshList('admin'); renderMasterTable('admin'); toast('Akun dihapus.'); }catch(e){ toast(e.message,'error'); } } }) }
+    ]
+  });
+}
+
+/* --- Kelas --- */
+function renderKelasForm(){
+  const ed = MF.editId ? S.kelas.find(k => String(k.ID) === String(MF.editId)) : null;
+  el('m-form').innerHTML = `
+    <h3 class="card-title">${ed ? 'Edit' : 'Tambah'} Kelas</h3>
+    <form id="f-kelas">
+      <label>Nama Kelas</label>
+      <input name="nama" value="${esc(ed ? ed['Nama Kelas'] : '')}" placeholder="Contoh: X IPA 1" required>
+      <div class="form-actions">
+        <button class="btn btn-primary" type="submit">${icon('check')} Simpan</button>
+        ${ed ? '<button class="btn btn-ghost" type="button" id="f-cancel">Batal</button>' : ''}
+      </div>
+    </form>`;
+  const form = el('f-kelas');
+  form.onsubmit = async e => {
+    e.preventDefault();
+    const fd = new FormData(form);
+    try{
+      await api('saveKelas', { id: MF.editId, nama: fd.get('nama') });
+      toast(ed ? 'Perubahan disimpan.' : 'Kelas ditambahkan.');
+      MF.editId = null;
+      await refreshList('kelas'); renderMasterForm('kelas'); renderMasterTable('kelas');
+    }catch(err){ toast(err.message, 'error'); }
+  };
+  el('f-cancel') && el('f-cancel').addEventListener('click', () => { MF.editId = null; renderMasterForm('kelas'); renderMasterTable('kelas'); });
+}
+
+function renderKelasTable(){
+  renderTable(el('m-table'), {
+    headers: [
+      { label:'Nama Kelas', render: r => esc(r['Nama Kelas']) },
+      { label:'Jumlah Pemilih', render: r => `${S.pemilih.filter(p => String(p.Kelas) === String(r.ID)).length} orang` }
+    ],
+    rows: S.kelas,
+    searchKeys: ['Nama Kelas'],
+    searchPlaceholder: 'Cari nama kelas...',
+    bulk: {
+      confirmMsg: 'Yakin menghapus {n} kelas terpilih?',
+      action: async ids => { await api('deleteKelas', { ids }); await refreshList('kelas'); }
+    },
+    refresh: () => renderMasterTable('kelas'),
+    rowActions: [
+      { key:'edit', title:'Edit', icon:icon('edit'), click:r => { MF.editId = r.ID; renderMasterForm('kelas'); } },
+      { key:'del', title:'Hapus', icon:icon('trash'), click:r => confirmDialog({ title:'Hapus kelas', message:`Hapus kelas <b>${esc(r['Nama Kelas'])}</b>?`, danger:true, okText:'Hapus', onOk:async () => { try{ await api('deleteKelas',{ids:[r.ID]}); await refreshList('kelas'); renderMasterTable('kelas'); toast('Kelas dihapus.'); }catch(e){ toast(e.message,'error'); } } }) }
+    ]
+  });
+}
+
+/* --- Pemilih --- */
+function renderPemilihForm(){
+  const ed = MF.editId ? S.pemilih.find(p => String(p.ID) === String(MF.editId)) : null;
+  el('m-form').innerHTML = `
+    <h3 class="card-title">${ed ? 'Edit' : 'Tambah'} Pemilih</h3>
+    <form id="f-pemilih">
+      ${ed ? `<label>Token</label><div class="ticket-chip">${esc(ed.Token)} <button type="button" class="icon-btn" id="t-copy" title="Salin token">${icon('copy')}</button></div>` : ''}
+      <label>Nama Pemilih</label>
+      <input name="nama" value="${esc(ed ? ed['Nama Pemilih'] : '')}" placeholder="Nama lengkap pemilih" required>
+      <label>Jenis Kelamin</label>
+      <select name="jk">
+        <option value="Laki-laki" ${ed && ed['Jenis Kelamin'] === 'Laki-laki' ? 'selected' : ''}>Laki-laki</option>
+        <option value="Perempuan" ${ed && ed['Jenis Kelamin'] === 'Perempuan' ? 'selected' : ''}>Perempuan</option>
+      </select>
+      <label>Kelas</label>
+      <select name="kelas" required>
+        <option value="">— Pilih Kelas —</option>
+        ${S.kelas.map(k => `<option value="${esc(k.ID)}" ${ed && String(ed.Kelas) === String(k.ID) ? 'selected' : ''}>${esc(k['Nama Kelas'])}</option>`).join('')}
+      </select>
+      <div class="form-actions">
+        <button class="btn btn-primary" type="submit">${icon('check')} Simpan</button>
+        ${ed ? '<button class="btn btn-ghost" type="button" id="f-cancel">Batal</button>' : ''}
+      </div>
+    </form>`;
+  const form = el('f-pemilih');
+  form.onsubmit = async e => {
+    e.preventDefault();
+    const fd = new FormData(form);
+    try{
+      const r = await api('savePemilih', { id: MF.editId, nama: fd.get('nama'), jk: fd.get('jk'), kelas: fd.get('kelas') });
+      toast(ed ? 'Perubahan disimpan.' : `Pemilih ditambahkan. Token: ${r.token}`);
+      MF.editId = null;
+      await refreshList('pemilih'); renderMasterForm('pemilih'); renderMasterTable('pemilih');
+    }catch(err){ toast(err.message, 'error'); }
+  };
+  el('f-cancel') && el('f-cancel').addEventListener('click', () => { MF.editId = null; renderMasterForm('pemilih'); renderMasterTable('pemilih'); });
+  const copyBtn = el('t-copy');
+  if(copyBtn) copyBtn.addEventListener('click', () => {
+    navigator.clipboard.writeText(ed.Token).then(() => toast('Token disalin.')).catch(() => toast('Gagal menyalin.'));
+  });
+}
+
+function renderPemilihTable(){
+  const kmap = {};
+  S.kelas.forEach(k => kmap[String(k.ID)] = k['Nama Kelas']);
+  const fKelas = { key:'kelas', label:'Kelas', options: S.kelas.map(k => ({ value:k.ID, label:k['Nama Kelas'] })) };
+  const fJK = { key:'jk', label:'Jenis Kelamin', options: [{value:'Laki-laki',label:'Laki-laki'},{value:'Perempuan',label:'Perempuan'}] };
+  el('m-table').innerHTML = `
+    <div class="import-bar">
+      <div class="import-acts">
+        <button class="btn btn-ghost btn-sm" id="btn-dl-template">${icon('download')} Download Template CSV</button>
+        <button class="btn btn-primary btn-sm" id="btn-import-csv">${icon('upload')} Import Data CSV</button>
+        <input type="file" id="csv-file" accept=".csv,text/csv" class="hidden">
+      </div>
+    </div>
+    <div id="pemilih-table"></div>`;
+  bindImport();
+  renderTable(el('pemilih-table'), {
+    headers: [
+      { label:'Token', render: r => `<span class="ticket-chip">${esc(r.Token)}</span>` },
+      { label:'Nama Pemilih', render: r => esc(r['Nama Pemilih']) },
+      { label:'Jenis Kelamin', render: r => r['Jenis Kelamin'] === 'Laki-laki' ? badge('Laki-laki','info') : badge('Perempuan','primary') },
+      { label:'Kelas', render: r => esc(kmap[String(r.Kelas)] || '—') }
+    ],
+    rows: S.pemilih,
+    searchKeys: ['Token', 'Nama Pemilih'],
+    searchPlaceholder: 'Cari token / nama...',
+    filters: [fKelas, fJK],
+    filter: r => (!fKelas.value || String(r.Kelas) === String(fKelas.value)) && (!fJK.value || r['Jenis Kelamin'] === fJK.value),
+    bulk: {
+      confirmMsg: 'Yakin menghapus {n} pemilih terpilih?',
+      action: async ids => { await api('deletePemilih', { ids }); await refreshList('pemilih'); }
+    },
+    refresh: () => renderMasterTable('pemilih'),
+    rowActions: [
+      { key:'edit', title:'Edit', icon:icon('edit'), click:r => { MF.editId = r.ID; renderMasterForm('pemilih'); } },
+      { key:'token', title:'Token baru', icon:icon('refresh'), click:async r => {
+        try{ const res = await api('generateToken',{id:r.ID}); await refreshList('pemilih'); renderMasterTable('pemilih'); toast(`Token baru: <b>${res.token}</b>`); }catch(e){ toast(e.message,'error'); }
+      } },
+      { key:'del', title:'Hapus', icon:icon('trash'), click:r => confirmDialog({ title:'Hapus pemilih', message:`Hapus pemilih <b>${esc(r['Nama Pemilih'])}</b>?`, danger:true, okText:'Hapus', onOk:async () => { try{ await api('deletePemilih',{ids:[r.ID]}); await refreshList('pemilih'); renderMasterTable('pemilih'); toast('Pemilih dihapus.'); }catch(e){ toast(e.message,'error'); } } }) }
+    ]
+  });
+}
+
+function downloadTemplate(){
+  const content = 'Nama Pemilih,Jenis Kelamin,Kelas\nBudi Santoso,Laki-laki,X IPA 1\nSiti Aminah,Perempuan,X IPA 2\n';
+  const blob = new Blob(['\uFEFF' + content], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'template_pemilih.csv';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+  toast('Template CSV diunduh.');
+}
+
+function parseCsv(text){
+  const fields = line => {
+    const out = []; let cur = '', inQ = false;
+    for(let i = 0; i < line.length; i++){
+      const c = line[i];
+      if(inQ){ if(c === '"'){ if(line[i+1] === '"'){ cur += '"'; i++; } else inQ = false; } else cur += c; }
+      else if(c === '"') inQ = true;
+      else if(c === ','){ out.push(cur); cur = ''; }
+      else cur += c;
+    }
+    out.push(cur);
+    return out.map(f => f.trim());
+  };
+  const lines = text.split(/\r?\n/).filter(l => l.trim() !== '');
+  if(lines.length < 2) return { rows: [], errors: ['File kosong atau hanya berisi header.'], total: 0 };
+  const header = fields(lines[0]).map(h => h.replace(/^\uFEFF/, '').toLowerCase());
+  const idxN = header.findIndex(h => h.includes('nama pemilih') || h === 'nama');
+  const idxJ = header.findIndex(h => h.includes('jenis kelamin') || h === 'jk');
+  const idxK = header.findIndex(h => h.includes('kelas'));
+  const useHeader = idxN >= 0 && idxK >= 0;
+  const rows = [], errors = [];
+  for(let i = 1; i < lines.length; i++){
+    const f = fields(lines[i]);
+    const nama = useHeader ? (f[idxN] || '') : (f[0] || '');
+    const jk = useHeader && idxJ >= 0 ? (f[idxJ] || '') : (f[1] || '');
+    const kelas = useHeader ? (f[idxK] || '') : (f[2] || '');
+    if(!nama && !jk && !kelas) continue;
+    if(!nama || !jk || !kelas){ errors.push(`Baris ${i+1}: kolom tidak lengkap`); continue; }
+    rows.push({ Nama: nama, JenisKelamin: jk, Kelas: kelas });
+  }
+  return { rows, errors, total: lines.length - 1 };
+}
+
+function bindImport(){
+  const dl = el('btn-dl-template');
+  const imp = el('btn-import-csv');
+  const file = el('csv-file');
+  if(!dl || !imp || !file) return;
+  dl.addEventListener('click', downloadTemplate);
+  imp.addEventListener('click', () => file.click());
+  file.addEventListener('change', async e => {
+    const f = e.target.files[0];
+    e.target.value = '';
+    if(!f) return;
+    const text = await f.text();
+    const parsed = parseCsv(text);
+    if(!parsed.rows.length){
+      toast(parsed.errors.length ? parsed.errors[0] : 'Tidak ada data valid untuk diimport.', 'error');
+      return;
+    }
+    const errNote = parsed.errors.length ? `<br><span style="color:#b45309">Diabaikan ${parsed.errors.length} baris (kolom tidak lengkap).</span>` : '';
+    confirmDialog({
+      title: 'Import Data Pemilih',
+      message: `Ditemukan <b>${parsed.total}</b> baris, <b>${parsed.rows.length}</b> data valid untuk diimport.${errNote}<br><br>Data yang sesuai kelas yang sudah ada akan diimport. Lanjutkan?`,
+      okText: 'Import Sekarang',
+      onOk: async () => {
+        try{
+          const res = await api('importPemilih', { rows: parsed.rows }, 'Mengimport data pemilih...');
+          toast(`Import selesai: ${res.imported} berhasil, ${res.skipped} dilewati.`);
+          if(res.skippedReasons && res.skippedReasons.length) toast('Baris dilewati: ' + res.skippedReasons.join('; '));
+          await refreshList('pemilih');
+          renderMasterTable('pemilih');
+        }catch(e){ toast(e.message, 'error'); }
+      }
+    });
+  });
+}
+
+/* --- Paslon --- */
+function renderPaslonForm(){
+  const ed = MF.editId ? S.paslon.find(p => String(p.ID) === String(MF.editId)) : null;
+  const PF = { ketua: ed ? ed['Foto Ketua'] : '', wakil: ed ? ed['Foto Wakil'] : '' };
+  const photoField = (key, label, cur) => `
+    <label>${label}</label>
+    <div class="photo-upload">
+      <div class="photo-prev" id="${key}-prev">${cur ? `<img src="${fotoUrl(cur)}" alt="">` : `<span>${icon('upload')}<small>Foto</small></span>`}</div>
+      <div class="photo-ctls">
+        <button type="button" class="btn btn-ghost btn-sm" data-pick="${key}">Pilih Foto</button>
+        ${cur ? '<span class="muted-sm">Foto terpasang</span>' : '<span class="muted-sm">jpg/png, maks 5MB</span>'}
+      </div>
+      <input type="file" id="${key}" accept="image/jpeg,image/png" class="hidden">
+    </div>`;
+  el('m-form').innerHTML = `
+    <h3 class="card-title">${ed ? 'Edit' : 'Tambah'} Paslon</h3>
+    <form id="f-paslon">
+      <label>Nomor Urut</label>
+      <input name="nomor" type="number" min="1" value="${ed ? esc(ed['Nomor Urut']) : ''}" placeholder="1" required>
+      <label>Nama Ketua</label>
+      <input name="ketua" value="${esc(ed ? ed['Nama Ketua'] : '')}" placeholder="Nama ketua" required>
+      ${photoField('ketua', 'Foto Ketua', PF.ketua)}
+      <label>Nama Wakil</label>
+      <input name="wakil" value="${esc(ed ? ed['Nama Wakil'] : '')}" placeholder="Nama wakil" required>
+      ${photoField('wakil', 'Foto Wakil', PF.wakil)}
+      <label>Visi dan Misi</label>
+      <textarea name="visiMisi" placeholder="Tuliskan visi dan misi pasangan calon..." required>${esc(ed ? ed['Visi Misi'] : '')}</textarea>
+      <div class="form-actions">
+        <button class="btn btn-primary" type="submit">${icon('check')} Simpan</button>
+        ${ed ? '<button class="btn btn-ghost" type="button" id="f-cancel">Batal</button>' : ''}
+      </div>
+    </form>`;
+
+  const pick = key => document.querySelector(`[data-pick="${key}"]`);
+  pick('ketua').addEventListener('click', () => el('ketua').click());
+  pick('wakil').addEventListener('click', () => el('wakil').click());
+  const bindUpload = (key, field) => {
+    el(key).addEventListener('change', e => {
+      const file = e.target.files[0];
+      if(!file) return;
+      if(!['image/jpeg','image/png'].includes(file.type)) return toast('Format foto harus jpg/png/jpeg.', 'error');
+      if(file.size > 5*1024*1024) return toast('Ukuran foto maksimal 5MB.', 'error');
+      const reader = new FileReader();
+      reader.onload = async () => {
+        const b64 = String(reader.result).split(',')[1];
+        try{
+          const r = await api('uploadFoto', { data: b64, mime: file.type }, 'Mengunggah foto...');
+          PF[field] = r.fileId;
+          el(key + '-prev').innerHTML = `<img src="${fotoUrl(r.fileId)}" alt="">`;
+          toast('Foto berhasil diunggah.');
+        }catch(err){
+          toast(err.message, 'error');
+          e.target.value = '';
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+  bindUpload('ketua', 'ketua');
+  bindUpload('wakil', 'wakil');
+
+  const form = el('f-paslon');
+  form.onsubmit = async e => {
+    e.preventDefault();
+    const fd = new FormData(form);
+    try{
+      await api('savePaslon', {
+        id: MF.editId, nomor: fd.get('nomor'), ketua: fd.get('ketua'), wakil: fd.get('wakil'),
+        visiMisi: fd.get('visiMisi'), fotoKetua: PF.ketua, fotoWakil: PF.wakil
+      });
+      toast(ed ? 'Perubahan disimpan.' : 'Paslon ditambahkan.');
+      MF.editId = null;
+      await refreshList('paslon'); renderMasterForm('paslon'); renderMasterTable('paslon');
+    }catch(err){ toast(err.message, 'error'); }
+  };
+  el('f-cancel') && el('f-cancel').addEventListener('click', () => { MF.editId = null; renderMasterForm('paslon'); renderMasterTable('paslon'); });
+}
+
+function renderPaslonTable(){
+  const miniPhoto = id => id ? `<img class="mini-photo" src="${fotoUrl(id)}">` : `<div class="mini-photo-ph">${icon('users')}</div>`;
+  renderTable(el('m-table'), {
+    headers: [
+      { label:'No', render: r => badge(r['Nomor Urut'], 'primary') },
+      { label:'Ketua', render: r => `<div style="display:flex;align-items:center;gap:10px">${miniPhoto(r['Foto Ketua'])}<b>${esc(r['Nama Ketua'])}</b></div>` },
+      { label:'Wakil', render: r => `<div style="display:flex;align-items:center;gap:10px">${miniPhoto(r['Foto Wakil'])}${esc(r['Nama Wakil'])}</div>` },
+      { label:'Visi Misi', render: r => `<button class="link-btn" data-vm="${esc(r.ID)}">Lihat</button>` }
+    ],
+    rows: S.paslon,
+    searchKeys: ['Nama Ketua', 'Nama Wakil'],
+    searchPlaceholder: 'Cari nama ketua / wakil...',
+    bulk: {
+      confirmMsg: 'Yakin menghapus {n} paslon terpilih?',
+      action: async ids => { await api('deletePaslon', { ids }); await refreshList('paslon'); }
+    },
+    refresh: () => renderMasterTable('paslon'),
+    rowActions: [
+      { key:'edit', title:'Edit', icon:icon('edit'), click:r => { MF.editId = r.ID; renderMasterForm('paslon'); } },
+      { key:'del', title:'Hapus', icon:icon('trash'), click:r => confirmDialog({ title:'Hapus paslon', message:`Hapus paslon <b>No. ${esc(r['Nomor Urut'])} — ${esc(r['Nama Ketua'])}</b>?`, danger:true, okText:'Hapus', onOk:async () => { try{ await api('deletePaslon',{ids:[r.ID]}); await refreshList('paslon'); renderMasterTable('paslon'); toast('Paslon dihapus.'); }catch(e){ toast(e.message,'error'); } } }) }
+    ]
+  });
+  $$('[data-vm]').forEach(b => b.addEventListener('click', () => {
+    const p = S.paslon.find(x => String(x.ID) === String(b.dataset.vm));
+    if(p) visiMisiModal({
+      NomorUrut: p['Nomor Urut'],
+      NamaKetua: p['Nama Ketua'],
+      FotoKetua: p['Foto Ketua'],
+      NamaWakil: p['Nama Wakil'],
+      FotoWakil: p['Foto Wakil'],
+      VisiMisi: p['Visi Misi']
+    });
+  }));
+}
+
+/* ---------- Visi & Misi ---------- */
+function visiMisiModal(p){
+  const person = (id, nama, cap, tag) => `
+    <div class="visi-person">
+      ${id ? `<img src="${fotoUrl(id)}" alt="">` : `<div class="ph">${icon('users')}</div>`}
+      <div class="cap">${esc(nama)}<small>${tag}</small></div>
+    </div>`;
+  el('modal-root').innerHTML = `
+    <div class="modal-backdrop">
+      <div class="modal wide">
+        <div class="modal-head">
+          <div class="confirm-ic primary">${icon('eye')}</div>
+          <h3>Paslon No. ${esc(p.NomorUrut)}</h3>
+        </div>
+        <div class="visi-grid">
+          ${person(p.FotoKetua, p.NamaKetua, '', 'Ketua')}
+          ${person(p.FotoWakil, p.NamaWakil, '', 'Wakil')}
+        </div>
+        <h3 class="card-title" style="margin-top:6px">${icon('file-text')} Visi &amp; Misi</h3>
+        <div class="visi-text">${esc(p.VisiMisi)}</div>
+        <div class="modal-actions" style="margin-top:20px">
+          <button class="btn btn-primary" data-x>Tutup</button>
+        </div>
+      </div>
+    </div>`;
+  el('modal-root').querySelector('[data-x]').onclick = closeModal;
+}
+
+/* ---------- Pemilihan (vote) ---------- */
+async function pagePemilihan(){
+  el('content').innerHTML = '<div class="page-loading"><div class="spinner"></div> Memuat data pemilihan...</div>';
+  try{
+    const info = await api('getVoteInfo');
+    const content = el('content');
+    let html = '';
+    if(!info.jadwalText){
+      html = `<div class="sched-strip">${icon('alert')}<div><b>Jadwal pemilihan belum diatur</b><span>Panitia belum menentukan waktu pemilihan. Silakan hubungi panitia.</span></div></div>`;
+    } else if(info.sudahVote){
+      html = `
+        <div class="voted-card">
+          <div class="voted-check">${icon('check')}</div>
+          <h2>Terima kasih telah memilih!</h2>
+          <p style="color:var(--muted);font-size:14px">Suara Anda telah tercatat dan tidak dapat diubah.</p>
+          <div class="voted-detail">
+            <span class="mono">Paslon No. ${esc(info.vote.NomorUrut)}</span>
+            <b style="font-size:17px">${esc(info.vote.NamaKetua)} &amp; ${esc(info.vote.NamaWakil)}</b>
+            <span class="muted-sm">${fmtDate(info.vote.Waktu)}</span>
+          </div>
+        </div>`;
+    } else if(!info.statusActive){
+      html = `<div class="sched-strip">${icon('alert')}<div><b>Anda tidak bisa melakukan vote karena di luar jadwal</b><span>Rentang pemilihan: ${esc(info.jadwalText)}</span></div></div>`;
+    } else {
+      html = `
+        <div class="sched-strip open">${icon('calendar')}<div><b>Pemilihan sedang berlangsung</b><span>Pilih satu pasangan calon. Vote hanya dapat dilakukan sekali.</span></div></div>
+        <div class="paslon-grid">
+          ${info.paslon.map(p => `
+            <div class="paslon-card">
+              <div class="paslon-photos">
+                ${`<div class="p-photo">${p.FotoKetua ? `<img src="${fotoUrl(p.FotoKetua)}" alt="">` : `<div class="ph">${icon('users')}<span>Belum ada foto</span></div>`}<span class="p-tag">Ketua</span></div>
+                <div class="p-photo">${p.FotoWakil ? `<img src="${fotoUrl(p.FotoWakil)}" alt="">` : `<div class="ph">${icon('users')}<span>Belum ada foto</span></div>`}<span class="p-tag">Wakil</span></div>`}
+              </div>
+              <div class="paslon-no">${esc(p.NomorUrut)}</div>
+              <div class="paslon-body">
+                <h4>${esc(p.NamaKetua)}</h4>
+                <p class="sub">bersama <b>${esc(p.NamaWakil)}</b></p>
+                <div class="paslon-acts">
+                  <button class="btn btn-ghost btn-sm" data-visi="${esc(p.ID)}">${icon('eye')} Lihat</button>
+                  <button class="btn btn-primary btn-sm" data-pilih="${esc(p.ID)}">${icon('check')} Pilih</button>
+                </div>
+              </div>
+            </div>`).join('')}
+        </div>`;
+    }
+    content.innerHTML = html;
+    $$('[data-visi]').forEach(b => b.addEventListener('click', () => {
+      const p = info.paslon.find(x => String(x.ID) === String(b.dataset.visi));
+      if(p) visiMisiModal(p);
+    }));
+    $$('[data-pilih]').forEach(b => b.addEventListener('click', () => {
+      const p = info.paslon.find(x => String(x.ID) === String(b.dataset.pilih));
+      if(!p) return;
+      confirmDialog({
+        title: 'Konfirmasi pilihan',
+        message: `Anda akan memilih <b>Paslon No. ${esc(p.NomorUrut)} — ${esc(p.NamaKetua)} &amp; ${esc(p.NamaWakil)}</b>.<br><br>Perhatian: vote hanya dapat dilakukan <b>sekali</b> dan tidak dapat diubah.`,
+        okText: 'Ya, Pilih',
+        onOk: async () => {
+          try{
+            await api('submitVote', { paslonId: p.ID }, 'Merekam suara Anda...');
+            toast('Suara berhasil direkam.');
+            pagePemilihan();
+          }catch(e){ toast(e.message, 'error'); }
+        }
+      });
+    }));
+  }catch(e){ el('content').innerHTML = ''; toast(e.message, 'error'); }
+}
+
+/* ---------- Monitor ---------- */
+async function pageMonitor(){
+  el('content').innerHTML = `
+    <div class="card monitor-toolbar">
+      <div class="mon-toolbar-acts">
+        <button class="btn btn-ghost" id="btn-mrefresh">${icon('refresh')} Refresh</button>
+        <button class="btn btn-ghost" id="btn-fullscreen">${icon('maximize')} Fullscreen</button>
+        <label class="switch"><input type="checkbox" id="auto-refresh" checked> Auto-refresh 10 dtk</label>
+      </div>
+      <span class="last-updated" id="last-updated"></span>
+    </div>
+    <div id="mon-data">${monitorSkeleton()}</div>`;
+
+  el('btn-mrefresh').addEventListener('click', () => loadMonitor());
+  el('btn-fullscreen').addEventListener('click', () => {
+    if(document.fullscreenElement){ document.exitFullscreen(); }
+    else { document.documentElement.requestFullscreen().catch(() => toast('Fullscreen tidak didukung.', 'error')); }
+  });
+  el('auto-refresh').addEventListener('change', e => { S.autoRefresh = e.target.checked; });
+
+  await loadMonitor();
+  if(S.monitorTimer) clearInterval(S.monitorTimer);
+  S.monitorTimer = setInterval(() => { if(S.autoRefresh) loadMonitor(true); }, 10000);
+}
+
+function monitorSkeleton(){
+  return `<div class="mon-grid">
+    <div class="skel"><div class="skel-line w70"></div><div class="skel-line"></div><div class="skel-line w50"></div><div class="skel-line w70"></div><div class="skel-line"></div></div>
+    <div class="skel"><div class="skel-line w50"></div><div class="skel-line"></div><div class="skel-line w70"></div></div>
+  </div>`;
+}
+
+function chartColor(nomorUrut){
+  return CHART_COLORS[(Number(nomorUrut) - 1) % CHART_COLORS.length];
+}
+
+async function loadMonitor(silent){
+  try{
+    const d = await api('getMonitor', {}, null, silent);
+    const max = Math.max.apply(null, d.rekap.map(p => p.suara).concat([0]));
+    const fillW = p => max ? Math.max(3, Math.round(p.suara / max * 100)) : 0;
+    el('mon-data').innerHTML = `
+      <div class="stat-grid" style="margin-bottom:18px">
+        <div class="stat-card"><div class="stat-ic ic-primary">${icon('users')}</div><div><div class="stat-val">${d.totalPemilih}</div><div class="stat-lbl">Total Pemilih</div></div></div>
+        <div class="stat-card"><div class="stat-ic ic-success">${icon('checkCircle')}</div><div><div class="stat-val">${d.sudahMemilih} <small style="font-size:13px;color:var(--muted)">(${d.persenSudah}%)</small></div><div class="stat-lbl">Sudah Memilih</div></div></div>
+        <div class="stat-card"><div class="stat-ic ic-warn">${icon('alert')}</div><div><div class="stat-val">${d.belumMemilih} <small style="font-size:13px;color:var(--muted)">(${d.persenBelum}%)</small></div><div class="stat-lbl">Belum Memilih</div></div></div>
+        <div class="stat-card"><div class="stat-ic ${d.status === 'Dibuka' ? 'ic-success' : 'ic-warn'}">${d.status === 'Dibuka' ? icon('checkCircle') : icon('info')}</div><div><div class="stat-val" style="font-size:19px">${esc(d.status)}</div><div class="stat-lbl">Status Voting</div></div></div>
+      </div>
+      <div class="mon-grid">
+        <section class="card">
+          <h3 class="card-title">${icon('activity')} Rekap Suara per Paslon</h3>
+          ${d.rekap.length ? d.rekap.map(p => `
+            <div class="bar-row">
+              <div class="bar-rank">${esc(p.NomorUrut)}</div>
+              <div class="bar-main">
+                <div class="bar-name">${esc(p.NamaKetua)} <span style="color:var(--muted);font-weight:500">bersama ${esc(p.NamaWakil)}</span></div>
+                <div class="bar-track"><div class="bar-fill" style="width:${fillW(p)}%;background:${chartColor(p.NomorUrut)}"></div></div>
+              </div>
+              <div class="bar-val">${p.suara} <small>${p.persen}%</small></div>
+            </div>`).join('') : '<div class="empty-state">Belum ada paslon terdaftar.</div>'}
+        </section>
+        <section class="card">
+          <h3 class="card-title">${icon('check')} Progress Partisipasi</h3>
+          <div class="part-progress">
+            <div class="part-label"><span>Sudah memilih</span><small>${d.persenSudah}%</small></div>
+            <div class="part-track"><div class="part-fill" style="width:${d.persenSudah}%"></div></div>
+          </div>
+          <h3 class="card-title" style="font-size:14px">${icon('layers')} Per Kelas</h3>
+          ${d.perKelas.length ? d.perKelas.map(k => `
+            <div class="kelas-row">
+              <div class="kelas-name">${esc(k.NamaKelas)}</div>
+              <div class="kelas-track"><div class="kelas-fill" style="width:${k.persen}%"></div></div>
+              <div class="kelas-val">${k.sudah}/${k.total}</div>
+            </div>`).join('') : '<div class="empty-state">Belum ada data.</div>'}
+        </section>
+      </div>`;
+    el('last-updated').textContent = 'Terakhir diperbarui: ' + fmtClock();
+  }catch(e){
+    if(!silent){ toast(e.message, 'error'); el('mon-data').innerHTML = `<div class="empty-state">${esc(e.message)}</div>`; }
+  }
+}
+
+/* ---------- Hasil ---------- */
+async function pageHasil(){
+  el('content').innerHTML = '<div class="page-loading"><div class="spinner"></div> Menyiapkan laporan...</div>';
+  try{
+    const d = await api('getHasil');
+    const winner = d.rekap[0];
+    el('content').innerHTML = `
+      <div class="hasil-actions">
+        <button class="btn btn-primary" id="btn-print">${icon('printer')} Cetak / Simpan PDF</button>
+      </div>
+      <div class="report" id="print-area">
+        <div class="report-head">
+          ${d.logo ? `<img class="report-logo" src="${fotoUrl(d.logo)}" alt="logo">` : ''}
+          <div>
+            <h1>${esc(d.namaSekolah)}</h1>
+            <h2>Laporan Hasil Pemilihan OSIS</h2>
+          </div>
+        </div>
+        <div class="report-meta">Dicetak: ${fmtDate(d.tanggalExport)}</div>
+        <table class="report-table">
+          <thead><tr><th style="width:60px">No</th><th>Pasangan Calon</th><th class="right">Jumlah Suara</th><th class="right">Persentase</th></tr></thead>
+          <tbody>
+            ${d.rekap.map(p => `<tr>
+              <td class="num">${esc(p.NomorUrut)}</td>
+              <td><b>${esc(p.NamaKetua)}</b> &amp; ${esc(p.NamaWakil)}</td>
+              <td class="right">${p.suara}</td>
+              <td class="right">${p.persen}%</td>
+            </tr>`).join('')}
+            ${winner ? `<tr><td colspan="2" style="font-weight:700;color:#059669">Juara (peringkat pertama)</td><td class="right" style="font-weight:800">${winner.suara}</td><td class="right" style="font-weight:800">${winner.persen}%</td></tr>` : ''}
+          </tbody>
+        </table>
+        <div class="report-part">
+          <div class="box"><b>${d.totalPemilih}</b><span>Total Pemilih</span></div>
+          <div class="box"><b>${d.sudahMemilih}</b><span>Sudah Memilih</span></div>
+          <div class="box"><b>${d.belumMemilih}</b><span>Belum Memilih</span></div>
+          <div class="box"><b>${d.persenSudah}%</b><span>Partisipasi</span></div>
+        </div>
+        ${d.perKelas.length ? `<h3 class="card-title">${icon('layers')} Partisipasi per Kelas</h3>
+        <table class="report-table">
+          <thead><tr><th>Kelas</th><th class="right">Jumlah Pemilih</th><th class="right">Sudah Memilih</th><th class="right">Persentase</th></tr></thead>
+          <tbody>${d.perKelas.map(k => `<tr><td>${esc(k.NamaKelas)}</td><td class="right">${k.total}</td><td class="right">${k.sudah}</td><td class="right">${k.persen}%</td></tr>`).join('')}</tbody>
+        </table>` : ''}
+        <div class="report-sign">
+          <div class="sig">
+            <div class="sig-s">Dicetak oleh,</div>
+            <div class="sig-b">${esc(d.generator.name)}</div>
+            <div class="sig-s">${esc(d.generator.peran)}</div>
+          </div>
+        </div>
+        <p class="report-note">Laporan ini dihasilkan secara otomatis oleh sistem Pemilihan OSIS pada ${fmtDate(d.tanggalExport)}.</p>
+      </div>`;
+    el('btn-print').addEventListener('click', () => window.print());
+  }catch(e){ el('content').innerHTML = ''; toast(e.message, 'error'); }
+}
+
+/* ---------- Pengaturan ---------- */
+async function pagePengaturan(){
+  el('content').innerHTML = '<div class="page-loading"><div class="spinner"></div> Memuat pengaturan...</div>';
+  try{
+    const set = await api('getPengaturan');
+    el('content').innerHTML = `
+      <div class="card" style="max-width:640px">
+        <h3 class="card-title">${icon('settings')} Pengaturan Aplikasi</h3>
+        <form id="f-pengaturan">
+          <label>Nama Sekolah</label>
+          <input name="namaSekolah" value="${esc(set.namaSekolah)}" placeholder="Nama sekolah" required>
+          <label>URL Logo Sekolah</label>
+          <input name="logo" value="${esc(set.logo)}" placeholder="https://... / ID file Google Drive">
+          <label>ID Folder Google Drive (untuk foto paslon)</label>
+          <input name="folderDrive" value="${esc(set.folderDrive)}" placeholder="Contoh: 1AbCdEfGhIjKlMnOpQrStUvWxYz">
+          <p class="muted-sm" style="margin-top:6px">Cara ambil ID: buka folder di Drive, lihat URL di browser — bagian <code>folders/</code> setelahnya adalah ID folder.</p>
+          <label>Waktu Mulai Pemilihan</label>
+          <input name="waktuMulai" type="datetime-local" value="${esc(set.waktuMulai ? String(set.waktuMulai).replace(' ','T').slice(0,16) : '')}">
+          <label>Waktu Tutup Pemilihan</label>
+          <input name="waktuTutup" type="datetime-local" value="${esc(set.waktuTutup ? String(set.waktuTutup).replace(' ','T').slice(0,16) : '')}">
+          <div class="form-actions">
+            <button class="btn btn-primary" type="submit">${icon('check')} Simpan Pengaturan</button>
+          </div>
+        </form>
+      </div>`;
+    const form = el('f-pengaturan');
+    form.onsubmit = async e => {
+      e.preventDefault();
+      const fd = new FormData(form);
+      try{
+        await api('savePengaturan', { data: {
+          namaSekolah: fd.get('namaSekolah'),
+          logo: fd.get('logo'),
+          folderDrive: fd.get('folderDrive'),
+          waktuMulai: String(fd.get('waktuMulai') || '').replace('T',' '),
+          waktuTutup: String(fd.get('waktuTutup') || '').replace('T',' ')
+        }});
+        toast('Pengaturan disimpan.');
+      }catch(err){ toast(err.message, 'error'); }
+    };
+  }catch(e){ el('content').innerHTML = ''; toast(e.message, 'error'); }
+}
+
+/* ---------- Profil ---------- */
+function openProfile(){
+  const isVoter = S.user.role === 'Pemilih';
+  el('modal-root').innerHTML = `
+    <div class="modal-backdrop">
+      <div class="modal">
+        <div class="modal-head"><div class="confirm-ic primary">${icon('user')}</div><h3>Profil</h3></div>
+        <form id="f-profil">
+          <label>Username / Token</label>
+          <input value="${esc(S.user.username)}" disabled style="opacity:.6">
+          <label>Nama Lengkap</label>
+          <input name="nama" value="${esc(S.user.name)}" required>
+          ${isVoter ? '' : `<label>Password Baru (kosongkan jika tidak diubah)</label>
+          <input name="password" type="text" placeholder="••••••••">`}
+          <div class="modal-actions" style="margin-top:22px">
+            <button class="btn btn-ghost" type="button" data-x>Batal</button>
+            <button class="btn btn-primary" type="submit">Simpan</button>
+          </div>
+        </form>
+      </div>
+    </div>`;
+  el('modal-root').querySelector('[data-x]').onclick = closeModal;
+  const form = el('f-profil');
+  form.onsubmit = async e => {
+    e.preventDefault();
+    const fd = new FormData(form);
+    try{
+      const r = await api('updateProfile', { nama: fd.get('nama'), password: fd.get('password') || undefined });
+      S.user.name = r.name;
+      el('user-name').textContent = r.name;
+      el('user-avatar').textContent = r.name.trim().charAt(0).toUpperCase();
+      closeModal();
+      toast('Profil diperbarui.');
+    }catch(err){ toast(err.message, 'error'); }
+  };
+}
+
+/* ---------- Init ---------- */
+function bindShell(){
+  el('btn-menu').addEventListener('click', () => {
+    if(window.innerWidth <= 760){ document.body.classList.toggle('nav-open'); }
+    else { setCollapsed(!S.collapsed); }
+  });
+  const backdrop = el('mobile-backdrop');
+  if(backdrop) backdrop.addEventListener('click', () => document.body.classList.remove('nav-open'));
+  el('user-chip').addEventListener('click', e => { e.stopPropagation(); el('user-menu').classList.toggle('hidden'); });
+  document.addEventListener('click', () => el('user-menu').classList.add('hidden'));
+  el('user-menu').addEventListener('click', e => e.stopPropagation());
+  el('user-menu').querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
+    el('user-menu').classList.add('hidden');
+    if(b.dataset.act === 'profil') openProfile();
+    if(b.dataset.act === 'logout') logout();
+  }));
+}
+
+async function init(){
+  bindLogin();
+  bindShell();
+  loadPublicInfo();
+  if(S.session){
+    try{
+      const p = await api('getProfile');
+      S.user = p;
+      enterApp();
+      return;
+    }catch(e){ sessionStorage.removeItem('session'); S.session = null; }
+  }
+  showLogin();
+}
+
+window.addEventListener('hashchange', render);
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
